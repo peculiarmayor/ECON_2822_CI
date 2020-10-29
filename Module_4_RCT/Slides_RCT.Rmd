@@ -190,7 +190,7 @@ I generate a set of simulated data:
 \tiny
 ```{r simrct1, results = "asis", echo=TRUE}
 
-set.seed(1999)
+set.seed(5000)
 
 scores5<-as.data.frame(rep(c(1,2,3,4,5,6,7,8,9,10),times=30))
 names(scores5)<-c("class")
@@ -405,6 +405,8 @@ $$
 - gives us an unbiased estimate of $\tau$ 
 
 - controlling for omitted variables is not necessary
+
+That said, it is common to see specifications in RCT projects that include a vector of control variables. **Why?**
  
 ## Controls in RCT specifications
 
@@ -446,12 +448,12 @@ stargazer(rct1, rct2, rct3, type="latex", header=FALSE, omit.stat = "all",
  
 ## Controls in RCT specifications
 
- Why does adding control variables add precision? Think about the formula for the variance/standard error of our estimator:
+ Why does adding control variables add precision? Think about the formula for the variance/standard error of our estimator (see Wooldridge Ch.3):
  
  $$
  \begin{aligned}
  Var(\hat{\beta_1})&=\frac{\sigma^2}{SST_x(1-R^2_j)}\\
- se(\beta_1)&=\frac{\hat{\sigma}}{\sqrt{SST_x(1-R^2_j)}}\\
+ se(\hat{\beta}_1)&=\frac{\hat{\sigma}}{\sqrt{SST_x(1-R^2_j)}}\\
  \hat{\sigma}^2&=\frac{1}{n-k-1}\sum^n_i\hat{u}^2_i
  \end{aligned}
  $$
@@ -550,7 +552,7 @@ This ATE hides important heterogeneity that is quite different for DGP 1, 2 and 
 - A positive effect on non-females and negative effect on females in DGP 3
 
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
 In RCT's, it is important to carefully define "Treatment".
 
@@ -562,7 +564,7 @@ Recall the blood pressure medication example: What is the "Treatment"?
 
 With non-compliance, the estimated treatment effect will depend on how we define treatment. 
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
 If I am interested in estimating the effects of actually taking the medication:
 
@@ -570,7 +572,7 @@ If I am interested in estimating the effects of actually taking the medication:
 
 **Why?**
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
 If I am interested in estimating the effects of actually taking the medication:
 
@@ -585,29 +587,29 @@ If I am interested in estimating the effects of actually taking the medication:
 - This is the estimated effect of being **told** to take the medication. 
 
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
 
-With non-complieres, the **ITT** estimate $\neq$ **TOT** estimate.
+With non-complieres, the **ITT** estimate $\neq$ **LATE** estimate.
 
 - The ITT: the effect of being in the treated group.
 
-- The TOT:  the effect of the treatment on those who actually got treated. 
+- The LATE:  the effect of the treatment on those who were pushed into treatment by our intervention, ie the compliers. 
 
-We can recover the TOT estimates using an IV estimation where being treated is instrumented  by being in the treatment group (see the IV Module Notes).  
+We can recover the LATE estimates using an IV estimation where being treated is instrumented  by being in the treatment group (see the IV Module Notes).  
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
-But what do we care about? The ITT or the TOT? 
+But what do we care about? The ITT or the LATE? 
 
-## Alphabet Soup!:IV's and RCT's from ITT to TOT
+## Alphabet Soup!:IV's and RCT's from ITT to LATE
 
-But what do we care about? The ITT or the TOT? 
+But what do we care about? The ITT or the LATE? 
 
 
 It depends.  
 
-## ITT and TOT: Contraceptive choice
+## ITT and LATE: Contraceptive choice
 
 
 :::::: {.columns}
@@ -615,9 +617,7 @@ It depends.
 ::: {.column width="40%" data-latex="{0.55\textwidth}"}
 
 \small
-- What is the TOT for male condoms?
 
-- What is the ITT for male condoms?
 
 - Which value do you care about if you are the condom manufacturer?
 
@@ -633,7 +633,13 @@ It depends.
 :::
 ::::::
 
+## The TOT (Treatment on the Treated)
 
+You may also run into estimates refered to as the TOT (Treatment on the treated). 
+
+The TOT is a weighted average of effects on always-takers and compliers.
+
+If there are no always-takers (ie no controls are treated), the LATE=TOT.
 
 
 
@@ -677,8 +683,12 @@ SUTVA tends to be violated whenever the treatment, $D_i$ involves spillovers bet
 
 - Example: if all the units are vaccinated, except $i$ then $Y_i(1)-Y_i(0)=0$: no treatment effect. (Since there is no one for $i$ to catch the measles from). 
 
+## RCT Challenges: Spillovers! SUTVA
+
+
 **What would be a potential SUTVA violation concern in our small reading group simulation?**
 
+**What would be a potential SUTVA violation concern in the migration paper?**
 
 
 ## RCT Challenges: Attrition Bias

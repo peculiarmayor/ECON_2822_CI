@@ -302,21 +302,24 @@ You can see that the basic, non-interacted specifications in columns 1,3 and 5 r
 
  
 \subsection{Alphabet Soup!}
-\subsubsection{Alphabet Soup!:IV's and RCT's from ITT to TOT}
+\subsubsection{Alphabet Soup!:IV's and RCT's from ITT to LATE}
 
-Instrumental variable estimations commonly pop up in RCT projects. The use of an instrumental variable estimator allows us to estimate what is referred to as the **TOT(Treatment On the Treated)** from **ITT(Intent To Treat)** estimates. 
+Instrumental variable estimations commonly pop up in RCT projects. The use of an instrumental variable estimator allows us to estimate what is referred to as the **LATE(Local Average Treatment Effect)** from **ITT(Intent To Treat)** estimates. 
 
 Recall the blood pressure medication example. I start with a pool of subjects that I randomize into treatment and control groups. I go to the subjects in the treatment group and I tell them to take the medication I give them. Have I actually treated them? This depends on how I define the treatment. If the treatment is defined as **taking the medication** then no, I have not treated them. If the treatment is defined as **instructing them to take the medication** then yes. I have treated them. 
 
 If I am interested in estimating the effects of actually taking the medication, $\tau=E[Y_i(1)]-E[Y_i(0)]$ is not what I am looking for. This estimate tells me the difference in the outcomes between those who were **told** to take the medication and those who were not. Thus $\tau$ is an estimate of the **intent-to-treat (ITT)** because it compares the outcomes of those I **intended** to give the medication to, to those I did not intend to give the medication to. 
 
-Whenever you have non-complieres, ie subjects that don't do as they were told, this **ITT** estimate will be different from the **TOT** estimate. The TOT estimate is, as the name suggests, the effect of the treatment on those who actually got treated. In our medicine example, the TOT of the blood control medication is the effect of actually taking the medication (not just the effect of being in the treatment group). We can recover the TOT estimates using an IV estimation where being treated is instrumented  by being in the treatment group (see section XXXXXXX) for the complete details.  
+Whenever you have non-complieres, ie subjects that don't do as they were told, this **ITT** estimate will be different from the **LATE** estimate. The LATE estimate is, as the name suggests, the effect of the treatment on those who are induced into getting treated by our intervention. In our medicine example, the LATE of the blood control medication is the effect of actually taking the medication (not just the effect of being in the treatment group). We can recover the LATE estimates using an IV estimation where being treated is instrumented  by being in the treatment group (see section XXXXXXX) for the complete details.  
 
-So what do we care about? The ITT or the TOT? Well, it really depends. A great example to think about the difference between ITT and TOT that you may have considered already is in the choice of contraceptives. When condoms are used perfectly, not only do they protect against STD's but they are also very effective as a contraceptive. But of course there is a big difference between perfect use and typical use. Though many may intend to use condoms as their main contraceptive methods, they are often not used perfectly and are thus much less effective. The ITT is substantially lower than the TOT. If you are a health care provider at the university's health center, which estimate do you consider when advising your patients on contraceptive options? Often times practitioners care more about the ITT then the TOT since for many treatments there will be non-compilers and if you are interested in estimating population level effects of a policy, these non-compilers are part of what you will need to contend with. 
+So what do we care about? The ITT or the LATE? Well, it really depends. A great example to think about the difference between ITT and LATE that you may have considered already is in the choice of contraceptives. When condoms are used perfectly, not only do they protect against STD's but they are also very effective as a contraceptive. But of course there is a big difference between perfect use and typical use. Though many may intend to use condoms as their main contraceptive methods, they are often not used perfectly and are thus much less effective. The ITT is substantially lower than the LATE. If you are a health care provider at the university's health center, which estimate do you consider when advising your patients on contraceptive options? Often times practitioners care more about the ITT then the LATE since for many treatments there will be non-compilers and if you are interested in estimating population level effects of a policy, these non-compilers are part of what you will need to contend with. 
 
-Thus the CDC website on contraception effectiveness reports typical (ITT) while the manufacturers of contraceptives will likely list effectiveness with perfect use (TOT) on their boxes.
+Thus the CDC website on contraception effectiveness reports typical (ITT) while the manufacturers of contraceptives will likely list effectiveness with perfect use (LATE) on their boxes.
 
  ![...]("images\contraceptivefailure.png")
+ 
+
+You may also encounter what are refered to as TOT (Treatment on the Treated) estimates. TOT is an estimate on people who take the treatment, including always-takers (ie people in the control group who get treated). If no one in the control group is treated then the LATE=TOT. 
  
 
 \subsection{RCT Challenges}
