@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  29 OCT 2020 16:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  30 OCT 2020 18:01
 entering extended mode
 **./Lecture_Notes_Markdown_RD.tex
 (Lecture_Notes_Markdown_RD.tex
@@ -622,138 +622,149 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {C:/Users/Claire/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<images/sharpRD.png, id=28, 482.40225pt x 310.761pt>
+File: images/sharpRD.png Graphic file (type png)
+<use images/sharpRD.png>
+Package pdftex.def Info: images/sharpRD.png  used on input line 171.
+(pdftex.def)             Requested size: 469.77719pt x 302.628pt.
+[2 <./images/sharpRD.png>]
+<images/sharpRD2.png, id=36, 358.33875pt x 372.79276pt>
+File: images/sharpRD2.png Graphic file (type png)
+<use images/sharpRD2.png>
+Package pdftex.def Info: images/sharpRD2.png  used on input line 204.
+(pdftex.def)             Requested size: 358.34334pt x 372.79752pt.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
-06.
+25.
 ("C:\Users\Claire\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 207.
-[2] [3] [4]
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 226.
+[3 <./images/sharpRD2.png>] [4] [5]
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
-422.
+442.
 ("C:\Users\Claire\AppData\Local\Programs\MiKTeX 2.9\tex/latex/lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-<Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf, id=49, 469.755pt x 
+) [6]
+<Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf, id=64, 469.755pt x 
 325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.
-pdf  used on input line 435.
+pdf  used on input line 455.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[5]
-Overfull \vbox (1.8942pt too high) detected at line 471
+
+Underfull \vbox (badness 1609) detected at line 491
  []
 
-[6 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf, id=65, 469.755pt x 
+[7 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp2-1.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf, id=75, 469.755pt x 
 325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.
-pdf  used on input line 488.
+pdf  used on input line 508.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[7 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf, id=77, 469.755pt x 
+[8 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuzzy2-1.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf, id=86, 469.755pt x 
 325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.
-pdf  used on input line 527.
+pdf  used on input line 547.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf, id=78, 469.755pt x 32
+<Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf, id=87, 469.755pt x 32
 5.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf Graphic file (typ
 e pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pd
-f  used on input line 538.
+f  used on input line 558.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[8 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf, id=88, 469.755pt x 
+[9 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp3-1.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf, id=97, 469.755pt x 
 325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.
-pdf  used on input line 569.
+pdf  used on input line 589.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[9 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf, id=99, 469.755pt x 
-325.215pt>
+[10 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuz3-1.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf, id=108, 469.755pt x
+ 325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.
-pdf  used on input line 580.
+pdf  used on input line 600.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[10 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf, id=109, 469.755pt x 3
+[11 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-1.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf, id=118, 469.755pt x 3
 25.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf Graphic file (typ
 e pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pd
-f  used on input line 591.
+f  used on input line 611.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[11 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-2.pdf, id=119, 469.755pt x 3
+[12 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp4-2.pdf>]
+<Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-2.pdf, id=128, 469.755pt x 3
 25.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-2.pdf Graphic file (typ
 e pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-2.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-2.pd
-f  used on input line 602.
+f  used on input line 622.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[12 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf>] [13 <./Lecture
+[13 <./Lecture_Notes_Markdown_RD_files/figure-latex/fuz4-1.pdf>] [14 <./Lecture
 _Notes_Markdown_RD_files/figure-latex/fuz4-2.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf, id=140, 469.755pt x
+<Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf, id=149, 469.755pt x
  325.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf Graphic file (t
 ype pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.
-pdf  used on input line 644.
+pdf  used on input line 664.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Lecture_Notes_Markdown_RD_files/figure-latex/fuz5-1.pdf, id=141, 469.755pt x 3
+<Lecture_Notes_Markdown_RD_files/figure-latex/fuz5-1.pdf, id=150, 469.755pt x 3
 25.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/fuz5-1.pdf Graphic file (typ
 e pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/fuz5-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/fuz5-1.pd
-f  used on input line 655.
+f  used on input line 675.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[14 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf>] [15 <./Lectu
+[15 <./Lecture_Notes_Markdown_RD_files/figure-latex/sharp5-1.pdf>] [16 <./Lectu
 re_Notes_Markdown_RD_files/figure-latex/fuz5-1.pdf>]
-<Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf, id=166, 469.755pt x 3
+<Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf, id=175, 469.755pt x 3
 25.215pt>
 File: Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf Graphic file (typ
 e pdf)
 <use Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf>
 Package pdftex.def Info: Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pd
-f  used on input line 751.
+f  used on input line 771.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[16] [17 <./Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 859.
-[18]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 859.
+[17] [18 <./Lecture_Notes_Markdown_RD_files/figure-latex/shp7-1.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 879.
+[19]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 879.
 (Lecture_Notes_Markdown_RD.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 859.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 859.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 879.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 879.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 13590 strings out of 481565
- 205354 string characters out of 2913711
+ 13611 strings out of 481565
+ 205703 string characters out of 2913711
  486673 words of memory out of 3000000
- 28447 multiletter control sequences out of 15000+200000
- 599367 words of font info for 121 fonts, out of 3000000 for 9000
+ 28459 multiletter control sequences out of 15000+200000
+ 599533 words of font info for 123 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,10n,42p,979b,366s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.e
@@ -781,9 +792,9 @@ s/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:
 0.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/lm/
 lmtt10.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
 c/lm/lmtti10.pfb>
-Output written on Lecture_Notes_Markdown_RD.pdf (18 pages, 455908 bytes).
+Output written on Lecture_Notes_Markdown_RD.pdf (19 pages, 546196 bytes).
 PDF statistics:
- 278 PDF objects out of 1000 (max. 8388607)
- 37 named destinations out of 1000 (max. 500000)
- 14432 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 288 PDF objects out of 1000 (max. 8388607)
+ 38 named destinations out of 1000 (max. 500000)
+ 14442 words of extra memory for PDF output out of 17280 (max. 10000000)
 

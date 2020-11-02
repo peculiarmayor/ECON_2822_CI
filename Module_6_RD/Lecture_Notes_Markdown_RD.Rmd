@@ -36,7 +36,12 @@ RD designs come in two flavors: Sharp and fuzzy. I will start by looking at shar
 
 \subsection{Sharp RD Designs}
 
-In a sharp RD design, the probability that $D=1$ changes from 0 to 1 as the running variable crosses $c$. In other words, no one with $X<c$ gets treated and everyone with $X\geq c$ gets treated, thus, $D_i$ is a deterministic function of $X_i: D_i=1(X_i\geq c)$.
+In a sharp RD design, the probability that $D=1$ changes from 0 to 1 as the running variable crosses $c$. In other words, no one with $X<c$ gets treated and everyone with $X\geq c$ gets treated, thus, $D_i$ is a deterministic function of $X_i: D_i=1$ if $(X_i\geq c)$. (Note: Here we assume that high values of the running variable get treated. For some RD set ups, the reverse will be true.)
+
+ ![]("images\sharpRD.png")
+
+In the image above we see that that the probability of getting treated switches from 0 to 1 when an observation's running variable $X$ crosses the threshold $c$. 
+
 
 To estimate the causal effect of $D_i$ on some outcome $Y_i$, we simply take the difference in mean outcome on either side of $c$. Formally, we estimate 
 
@@ -60,6 +65,11 @@ $$
 \tau_{SRD}=lim_{x \rightarrow c}E[Y_i|X_i=x]-lim_{x \leftarrow c}E[Y_i|X_i=x]
 $$
  and estimate $\tau_{SRD}$ as the difference between the two regression functions estimated in the **neighborhood** of $c$.
+ 
+ ![]("images\sharpRD2.png")
+ 
+ In the image above, $\tau_{SRD}$, the effect of receiving treatment, is estimated as the difference in the mean outcomes of those that are right above the cutoff (who are treated) and those right below the cutoff (who are untreated). This gap will correctly estimate the treatment effect if the continuity assumption holds: had they not received treatment, the treated groups outcomes would be represented by the dashed blue line, and had they received treatment, the untreated groups outcomes would have been the dashed red line. 
+ 
  
  \subsubsection{Simulation}
  
@@ -98,7 +108,7 @@ sharp<-sharp[sharp$read3<78 & sharp$read3>72,]
  Formally we have that 
  
 $$
-0<lim_{x\rightarrow c}P(D-i=1|X_i=x)-lim_{x\leftarrow c}P(D_i=1|X-i=x)<1
+0<lim_{x\rightarrow c}P(D_i=1|X_i=x)-lim_{x\leftarrow c}P(D_i=1|X_i=x)<1
 $$
  This scenario is potentially more common than the sharp RD scenario as most things in life are determined by multiple factors and the influence of the running variable as it crosses the threshold $c$ may be just one of these factors. In the fuzzy RD designs, there are now two causal effects to be estimated: the effect of crossing the threshold on the probability of treatment (which is 1 in the sharp RD) and the effect of crossing the threshold on the outcome. Formally, the fuzzy RD estimator is 
  
@@ -106,8 +116,8 @@ $$
 \tau_{FRD}=\frac{lim_{x\rightarrow c} E[Y_i|X_i=x]-lim_{x\leftarrow c}E[Y_i|X_i=x]}{lim_{x\rightarrow c} E[D_i|X_i=x]-lim_{x\leftarrow c}E[D_i|X_i=x]}.
 $$
  
- If this looks familiar, that's because it should. It's the direct analog of an IV estimator in which the instrument is an indicator for whether $X_i$ lies directly above $c$. The way the IV estimator is being used, and should be interpreted here is very similar to how the IV estimator allowed us to recover the TOT estimate in an RCT. 
- In a fuzzy RD there is the intend-to-treat group (say who have $X_i\geq c$ for example) and the control group ($X_i<c$). Because we are in fuzzy land, just because you are in the intend-to-treat group does not necessarily mean you get treated (there are never takers) and similarly, some in the control get treated (always takers). But there is a group of observations, the compliers, whose treatment status would change if they went from control to intend-to-treat (ie if they were moved across the threshold). This is analogous to an RCT with never and always takers. Thus, just like in the RCT context, if I just compare the outcomes of those that are above and below the threshold ($lim_{x\rightarrow c} E[Y_i|X_i=x]-lim_{x\leftarrow c}E[Y_i|X_i=x]$) the effect is "diluted" by the fact that for many observations, crossing the threshold has no effect (since they are always or never takers). Therefore, just as we were able to recover the treatment on the treated (TOT) effect in the RCT by scaling the average treatment effect by the change in the probability of treatment, here too we scale our estimate by the change in probability of receiving treatment ($lim_{x\rightarrow c} E[D_i|X_i=x]-lim_{x\leftarrow c}E[D_i|X_i=x]$). Thus, intuitively, the fuzzy RD design measures the average treatment effect for RD compliers at the threshold,
+ If this looks familiar, that's because it should. It's the direct analog of an IV estimator in which the instrument is an indicator for whether $X_i$ lies directly above $c$. The way the IV estimator is being used, and should be interpreted here is very similar to how the IV estimator allowed us to recover the LATE estimate in an RCT. 
+ In a fuzzy RD there is the intend-to-treat group (say who have $X_i\geq c$ for example) and the control group ($X_i<c$). Because we are in fuzzy land, just because you are in the intend-to-treat group does not necessarily mean you get treated (there are never takers) and similarly, some in the control get treated (always takers). But there is a group of observations, the compliers, whose treatment status would change if they went from control to intend-to-treat (ie if they were moved across the threshold). This is analogous to an RCT with never and always takers. Thus, just like in the RCT context, if I just compare the outcomes of those that are above and below the threshold ($lim_{x\rightarrow c} E[Y_i|X_i=x]-lim_{x\leftarrow c}E[Y_i|X_i=x]$) the effect is "diluted" by the fact that for many observations, crossing the threshold has no effect (since they are always or never takers). Therefore, just as we were able to recover the local average treatment effect (LATE) effect in the RCT by scaling the average treatment effect by the change in the probability of treatment, here too we scale our estimate by the change in probability of receiving treatment ($lim_{x\rightarrow c} E[D_i|X_i=x]-lim_{x\leftarrow c}E[D_i|X_i=x]$). Thus, intuitively, the fuzzy RD design measures the average treatment effect for RD compliers at the threshold,
  
 $$
 \tau_{FRD}=E[Y_i(1)-Y_i(0)|\text{unit }i\text{ is a complier and } X_i=c]. 
@@ -242,9 +252,6 @@ plot1fuz<-ggplot(fuzzy_mean, aes(x=bins, y=treatbinmean))+
          geom_point()+
          geom_vline(xintercept = 75)
 plot1fuz
-
-
-
 
 ```
 

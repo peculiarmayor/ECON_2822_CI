@@ -1,5 +1,5 @@
 ---
-title: "MQE: Economic Inference from Data:  \nModule 4: Randomized Control Trials"
+title: "MQE: Economic Inference from Data:  \nModule 5: Difference in Differences"
 author: "Claire Duquennois"
 date: "6/9/2020"
 output:
@@ -210,6 +210,15 @@ $$
 \Delta \bar{Y}_T-\Delta \bar{Y}_C=\lambda_1+\tau-\lambda_1=\tau
 $$
 
+
+## DID Regressions:
+
+This can be done in a regression framework:
+
+**How would you specify this regression?**
+
+$\Rightarrow$ Top Hat
+
 ## DID Regressions:
 
 This can be done in a regression framework:
@@ -221,6 +230,10 @@ $$
 - $Post_t$ is an indicator for the post treatment period, 
 
 - $GetsTreat_i$ is an indicator for observations in the treatment group that eventually gets treated. 
+
+**Which coefficient identifies the treatment effect?**
+
+$\Rightarrow$ Top Hat
 
 ## DID Regressions:
 

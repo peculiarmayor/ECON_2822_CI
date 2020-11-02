@@ -75,7 +75,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={MQE: Economic Inference from Data: Module 4: Randomized Control Trials},
+  pdftitle={MQE: Economic Inference from Data: Module 5: Difference in Differences},
   pdfauthor={Claire Duquennois},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
@@ -146,7 +146,7 @@
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
 \title{MQE: Economic Inference from Data:\\
-Module 4: Randomized Control Trials}
+Module 5: Difference in Differences}
 \author{Claire Duquennois}
 \date{6/9/2020}
 
@@ -407,6 +407,15 @@ effect and isolate the treatment effect of interest:
 \protect\hypertarget{did-regressions}{}
 This can be done in a regression framework:
 
+\textbf{How would you specify this regression?}
+
+\(\Rightarrow\) Top Hat
+\end{frame}
+
+\begin{frame}{DID Regressions:}
+\protect\hypertarget{did-regressions-1}{}
+This can be done in a regression framework:
+
 \[
 Y_{it}=\beta_0+\beta_1 Post_t+\beta_2 GetsTreat_i+\beta_3 Post_t\times GetsTreat_i+u_{it}
 \]
@@ -418,10 +427,14 @@ Y_{it}=\beta_0+\beta_1 Post_t+\beta_2 GetsTreat_i+\beta_3 Post_t\times GetsTreat
   \(GetsTreat_i\) is an indicator for observations in the treatment
   group that eventually gets treated.
 \end{itemize}
+
+\textbf{Which coefficient identifies the treatment effect?}
+
+\(\Rightarrow\) Top Hat
 \end{frame}
 
 \begin{frame}{DID Regressions:}
-\protect\hypertarget{did-regressions-1}{}
+\protect\hypertarget{did-regressions-2}{}
 \(\beta_3\) is the difference-in-differences estimator:
 
 \begin{itemize}
