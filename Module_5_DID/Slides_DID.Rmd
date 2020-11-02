@@ -393,7 +393,7 @@ $$
 
 The parallel trends assumption is a fairly big assumption in many circumstances: 
 
-- policymakers may select treatment and control based on differences in the anticipated effects of treatment, or pre-existing differences in outcomes
+- policymakers may select treatment and control based on differences in the **anticipated** effects of treatment, or pre-existing differences in outcomes
 
 In this case, the parallel trends assumption does not hold. 
 
