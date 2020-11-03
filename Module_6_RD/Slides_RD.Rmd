@@ -17,6 +17,8 @@ knitr::opts_chunk$set(fig.width=9, fig.height=5)
 
 library(dplyr)
 library(ggplot2)
+library(lfe)
+library(stargazer)
 ```
 
 ## Regression discontinuity research designs
@@ -282,10 +284,11 @@ Your data includes the 3rd and 4th grade reading scores for all 5000 students in
 
 ## Fuzzy RD Simulation:
 
- 
-```{r rdfuzzy1}
+ \tiny
+```{r rdfuzzy1, echo=TRUE}
 
-set.seed(7000)
+
+set.seed(2000)
 
 fuzzy<-rnorm(5000, mean=80, sd=5)
 fuzzy<-as.data.frame(fuzzy)
@@ -294,11 +297,12 @@ names(fuzzy)<-c("read3")
 fuzzy$error<-rnorm(5000, mean=0, sd=5)
 fuzzy$pe3<-rnorm(5000, mean=90, sd=4)
 fuzzy$height<-rnorm(5000, mean=130, sd=15)
+
 ```
 
 ## Fuzzy RD Simulation:
-
-```{r rdfuzzy1b}
+\tiny
+```{r rdfuzzy1b, echo=TRUE}
 
 fuzzy$lowprob<-rbinom(5000,1,0.3)
 fuzzy$highprob<-rbinom(5000,1,0.8)
@@ -306,9 +310,10 @@ fuzzy$treated<-NA
 fuzzy$treated[fuzzy$read3>75]<-fuzzy$lowprob[fuzzy$read3>75]
 fuzzy$treated[fuzzy$read3<=75]<-fuzzy$highprob[fuzzy$read3<=75]
 
+tau=10
 
 #the DGP
-fuzzy$read4<-(-6)+0.8*fuzzy$read3+10*fuzzy$treated+fuzzy$error
+fuzzy$read4<-(-6)+0.8*fuzzy$read3+tau*fuzzy$treated+fuzzy$error
 
 fuzzy<-fuzzy[fuzzy$read3<78 & fuzzy$read3>72,]
 
@@ -497,3 +502,373 @@ plot1fuz<-ggplot(fuzzy_mean, aes(x=bins, y=treatbinmean))+
 plot1fuz
 
 ```
+
+
+
+## Outcome Graphs
+
+The main course of an RD paper is a plot of the outcome by the running variable. 
+
+If $\tau\neq0$, we expect to see a discontinuity here too. 
+
+Plotting this graph requires calculating, $\bar{D}_k$, the average outcome in each bin
+
+$$
+\bar{Y}_k=\frac{1}{N_k}\sum_{i=1}^NY_i*1(b_k<X_i\leq b_{k+1})
+$$
+
+and plotting these values against the midpoint of each of the bins.
+
+## Outcome Graphs
+
+A visual break at $c$
+
+- $\Rightarrow$ crossing $c$ has a significant effect on the outcome,
+
+- $\Rightarrow$ the treatment has a significant effect on the outcome. This graph is the equivalent of the reduced form in an IV analysis. 
+
+
+## Outcome Graphs: Robustness
+
+You should also look for other discontinuities of similar (or greater) magnitude at other values of $X_i$.
+
+If there discontinuities for no clear reason, the research design is called into question - effectively we have detected a violation of Assumption 1 (smoothness in expected potential outcomes). 
+
+
+## Outcome Graphs: Sharp
+
+\tiny
+```{r sharp3a, echo=TRUE}
+
+plot2shp<-ggplot(sharp_mean, aes(x=bins, y=outbinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+
+```
+
+## Outcome Graphs: Sharp
+
+\tiny
+```{r sharp3b}
+
+plot2shp
+```
+
+## Outcome Graphs: Fuzzy
+
+
+```{r fuz3a, echo=TRUE}
+
+
+plot2fuz<-ggplot(fuzzy_mean, aes(x=bins, y=outbinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot2fuz
+
+
+```
+
+
+## Outcome Graphs: Fuzzy
+
+```{r fuz3b}
+
+plot2fuz
+
+```
+
+
+## Robustness Graphs: Covariates
+
+It is common to plot covariates that may be related to the outcome but should not be affected by the treatment. 
+
+As above, we calculate $\bar{Z}_i$ where 
+$$
+\bar{Z}_k=\frac{1}{N_k}\sum_{i=1}^NZ_i*1(b_k<X_i\leq b_{k+1})
+$$
+is plotted against the midpoint of each bin.
+
+
+If the research design is valid there should not be any discontinuity in $\bar{Z}_k$ as the running variable crosses the threshold $c$. 
+
+This is equivalent to a balance check across the threshold- you are checking that the treated and un-treated groups are similar.
+
+
+## Robustness Graphs: Covariates sharp
+
+\tiny
+```{r sharp4a, echo=TRUE}
+
+plot3shp<-ggplot(sharp_mean, aes(x=bins, y=pebinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot3shp
+
+```
+
+
+## Robustness Graphs: Covariates sharp
+
+\tiny
+```{r sharp4b, echo=TRUE}
+
+
+plot4shp<-ggplot(sharp_mean, aes(x=bins, y=heightbinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot4shp
+
+
+```
+
+
+## Robustness Graphs: Covariates fuzzy
+
+\tiny
+
+```{r fuz4a}
+
+
+plot3fuz<-ggplot(fuzzy_mean, aes(x=bins, y=pebinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot3fuz
+```
+
+## Robustness Graphs: Covariates fuzzy
+\tiny
+```{r fuz4b}
+
+plot4fuz<-ggplot(fuzzy_mean, aes(x=bins, y=heightbinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot4fuz
+
+```
+
+
+## Robustness Graphs: Density of the Running Variable
+
+It is also common to plot the density of the running variable. 
+
+For each bin, you calculate
+$$
+N_k=\sum_{i=1}^N1(b_k<X_i\leq b_{k+1})
+$$
+and plot these against the midpoint of the bin. 
+
+A concern in RD is that individuals may "game" the assignment rule: they manipulate their $X_i$ to place themselves just above (below) $c$. 
+
+This sorting would create selection bias and bias our estimate of $\tau$.
+
+If units are manipulating $X_i$ around $c$, we will see a discontinuity in the distribution of $X_i$ as it crosses $c$. 
+
+If the distribution of $X_i$ is smooth as it crosses $c$, then it's unlikely that individuals are gaming the assignment mechanism. 
+
+## Robustness Graphs: Density of the Running Variable
+
+Example:
+
+- consider a scholarship if test scores fall above a certain threshold $c$. Shrewd students could retake the test many times until they pass the threshold.
+
+- If a researcher uses an individuals maximum test score as the running variable, motivated individuals who retake the test many times are more likely to fall just above the threshold, then just below it.
+
+- this group of observations is selected and no longer directly comparable to the observations that fall directly below the threshold. 
+
+
+## Robustness Graphs: Density of the Running Variable (Sharp)
+\tiny
+```{r sharp5, echo=TRUE}
+
+plot5shp<-ggplot(sharp_mean, aes(x=bins, y=numb))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot5shp
+
+```
+
+## Robustness Graphs: Density of the Running Variable (Fuzzy)
+
+\tiny
+```{r fuz5, echo=TRUE}
+
+plot5fuz<-ggplot(fuzzy_mean, aes(x=bins, y=numb))+ 
+         geom_point()+
+         geom_vline(xintercept = 75)
+plot5fuz
+
+```
+
+
+
+## RD Estimation
+
+RD estimations can be done quite easily in a regression framework.
+
+Step 1: Selecting a bandwidth, $h$, that will determine the regression sample on either side of the threshold point $c$.
+
+- bandwith selection involves thinking about the tradeoff between sample size and group comprability
+
+- there is an econometric literature that discusses methods to choose the optimal bandwidth 
+
+- in practice this choice is more art than science and many papers make this choice fairly arbitrarily
+
+- it is generally good practice to check that results are not sensitive to the choice of bandwidth
+
+
+## RD Estimation: Sharp
+
+Fit a linear regression on either side of the threshold point for the samples with $X-i\in (c-h,c)$ and $X_i[c,c+h)]$.
+
+Estimating some version (you can include covariates) of the following specification,
+
+$$
+Y_i=\alpha+\tau D-i+\beta(X_i-c)+\gamma (X_i-c)*D_i+u_i \text{ for }  c-h<X_i\leq c+h. 
+$$
+
+With this estimation strategy, $\hat{\tau}_{SRD}$ will estimate the treatment effect for units right at the threshold. 
+
+## RD Estimation: Sharp
+\tiny
+```{r shp6,echo=TRUE, results="asis"}
+
+sharp$runminc<-sharp$read3-75
+shpestim<-felm(read4~treated+runminc+treated*runminc, sharp)
+
+stargazer(shpestim, type="latex", header=FALSE)
+
+```
+
+## RD Estimation: Sharp
+
+It is helpful to see how the coefficients estimated above translate to the RD graph. 
+
+ADD Stylized graph and top hat question
+
+## RD Estimation: Sharp
+
+It is helpful to see how the coefficients estimated above translate to the RD graph. 
+
+\tiny
+```{r shp7, echo=TRUE}
+
+sharp_mean$runminc<-sharp_mean$bins-75
+
+plot6shp<-ggplot(sharp_mean, aes(x=runminc, y=outbinmean))+ 
+         geom_point()+
+         geom_vline(xintercept = 0)+
+         geom_segment(aes(x = 0, xend = 3, 
+                          y = shpestim$coefficients[1],
+                          yend = shpestim$coefficients[1]
+                                 +3*shpestim$coefficients[3]))+
+         geom_segment(aes(x = -3, xend = 0,
+                          y = shpestim$coefficients[1]
+                              + shpestim$coefficients[2]
+                              +(-3*( shpestim$coefficients[3]+ shpestim$coefficients[4])), 
+                          yend = shpestim$coefficients[1]
+                              + shpestim$coefficients[2]))+
+          #adding some labeling for course notes:
+          annotate("text", x = 0.75, y = 64.8,
+                   label = "Intercept~is~alpha~+~tau" ,parse = TRUE)+
+          annotate("text", x = -0.6, y = 54, 
+                   label = "Intercept~is~alpha" ,parse = TRUE)+
+          annotate("text", x = -2, y = 64,
+                   label = "Slope~is~beta~+~gamma" ,parse = TRUE)+
+          annotate("text", x = 2, y = 54, 
+                   label = "Slope~is~beta" ,parse = TRUE)+
+          annotate("text", x = -1, y = 58, 
+                   label = "TREATED" ,parse = TRUE)+
+          annotate("text", x = 1, y = 58, 
+                   label = "UNTREATED" ,parse = TRUE) 
+```
+
+## RD Estimation: Sharp
+
+$$
+Y_i=\alpha+\tau D-i+\beta(X_i-c)+\gamma (X_i-c)*D_i+u_i \text{ for }  c-h<X_i\leq c+h. 
+$$
+
+\tiny
+```{r shp7b, echo=TRUE}
+
+plot6shp
+
+```
+
+
+## RD Estimation: Fuzzy
+
+
+In the fuzzy RD design, we have two effects to estimate: 
+
+- the effect of crossing the threshold on the treatment (the "first stage") 
+
+- the effect of crossing the threshold on the outcome (the "reduced form"). 
+
+We apply the same methodology as in earlier IV's to estimate the effect of crossing the threshold on $Y_i$ and the effect of crossing the threshold on $D_i$. 
+
+## RD Estimation: Fuzzy
+
+For the sample with $c-h<X_i\leq c+h$ we run some version (you can include covariates) of the following regressions,
+$$
+Y_i=\pi_0+\pi_1D_i+\pi_2(X_i-c)+\pi_3(X_i-c)*D_i+u_i 
+$$
+where the first stage is given by
+$$
+D_i=\gamma_0+\gamma_1Z_i+\gamma_2(X_i-c)+\gamma_3(X_i-c)*Z_i+v_i
+$$
+where $Z_i=1(X_i\geq c)$.
+
+## RD Estimation: Fuzzy
+
+The fuzzy RD estimator is then 
+
+$$
+\hat{\tau}_{FRD}=\frac{\hat{\pi}_1}{\hat{\gamma}_1}.
+$$
+The FRD estimator is the ratio of the reduced form and the first stage estimates
+
+i.e. the effect of crossing the discontinuity threshold on the outcome, scaled by the effect of crossing the discontinuity threshold on the probability of treatment. 
+
+
+
+## RD Estimation: Fuzzy
+
+\tiny
+```{r fuz7, results="asis", echo=TRUE}
+
+fuzzy$runminc<-fuzzy$read3-75
+
+#first stage
+fuzzy$ittgroup<-0
+fuzzy$ittgroup[fuzzy$read3<=75]<-1
+
+fuzfs<-felm(treated~ittgroup+runminc+ittgroup*runminc,fuzzy)
+
+#reduced form
+fuzrf<-felm(read4~ittgroup+runminc+ittgroup*runminc,fuzzy)
+
+
+fuzzy$interedog<-fuzzy$treated*fuzzy$runminc
+fuzzy$interinst<-fuzzy$ittgroup*fuzzy$runminc
+#IV
+fuziv<-felm(read4~runminc|0|(treated|interedog~ittgroup+runminc+interinst),fuzzy)
+```
+
+## RD Estimation: Fuzzy
+\tiny
+```{r fuz7b, results="asis", echo=TRUE}
+
+stargazer(fuzfs, fuzrf, fuziv, type="latex", header=FALSE)
+
+```
+
+## RD Estimation: Fuzzy
+
+Note: you will not be able to plot the "scaled" treatment effect as the graphs are limited to the graphical equivalent of the first stage and the reduced form estimates. 
+
+
+
+
+
+

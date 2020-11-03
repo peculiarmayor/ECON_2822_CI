@@ -133,7 +133,8 @@ $$
  
 ```{r rdfuzzy1}
 
-set.seed(7000)
+
+set.seed(2000)
 
 fuzzy<-rnorm(5000, mean=80, sd=5)
 fuzzy<-as.data.frame(fuzzy)
@@ -431,7 +432,7 @@ plot6shp
 In the fuzzy RD design, we have two effects to estimate: the effect of crossing the threshold on the treatment (the "first stage") and the effect of crossing the threshold on the outcome (the "reduced form"). As you might expect, we apply the same methodology as in earlier IV's to estimate the effect of crossing the threshold on $Y_i$ and the effect of crossing the threshold on $D_i$. For the sample with $c-h<X_i\leq c+h$ we run some version (you can include covariates) of the following regressions,
 
 $$
-Y_i=\pi_0+\pi_1Z_i+\pi_2(X_i-c)+\pi_3(X_i-c)*Z_i+u_i 
+Y_i=\pi_0+\pi_1D_i+\pi_2(X_i-c)+\pi_3(X_i-c)*D_i+u_i 
 $$
 and 
 
