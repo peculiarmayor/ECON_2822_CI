@@ -840,6 +840,9 @@ Two main types of graphs
 \NormalTok{allscores \textless{}{-}}\StringTok{ }\NormalTok{fastDummies}\OperatorTok{::}\KeywordTok{dummy\_cols}\NormalTok{(allscores, }\DataTypeTok{select\_columns =} \StringTok{"year"}\NormalTok{)}
 
 \NormalTok{regdidall2\textless{}{-}}\KeywordTok{felm}\NormalTok{(read4}\OperatorTok{\textasciitilde{}}\NormalTok{treat}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{1995}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1996}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1997}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1998}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{1999}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2001}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2002}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2003}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{2004}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2005}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{1995}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1996}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1997}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1998}\OperatorTok{*}\NormalTok{treat}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{1999}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2001}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2002}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2003}\OperatorTok{*}\NormalTok{treat}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{2004}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2005}\OperatorTok{*}\NormalTok{treat,}
@@ -1000,6 +1003,9 @@ Clustering standard errors can be done in R using the felm function:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{regdidall3\textless{}{-}}\KeywordTok{felm}\NormalTok{(read4}\OperatorTok{\textasciitilde{}}\NormalTok{treat}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{1995}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1996}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1997}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1998}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{1999}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2001}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2002}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2003}
+                 \OperatorTok{+}\NormalTok{year\_}\DecValTok{2004}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2005}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{1995}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1996}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1997}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{1998}\OperatorTok{*}\NormalTok{treat}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{1999}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2001}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2002}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2003}\OperatorTok{*}\NormalTok{treat}
                  \OperatorTok{+}\NormalTok{year\_}\DecValTok{2004}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{year\_}\DecValTok{2005}\OperatorTok{*}\NormalTok{treat}
@@ -1163,6 +1169,20 @@ Y_{i,a,g,t}=&\alpha_0+\alpha_1 GetT_{g}+\alpha_2 AS_{a}+\alpha_3 Post_{t}\\
 
 \begin{frame}{Triple differences}
 \protect\hypertarget{triple-differences-1}{}
+\[
+\begin{aligned}
+Y_{i,a,g,t}=&\alpha_0+\alpha_1 GetT_{g}+\alpha_2 AS_{a}+\alpha_3 Post_{t}\\
+&+\alpha_4 (GetT \times Post)_{gt}+\alpha_5 (GetT \times AS)_{ga}+\alpha_6 (Post \times AS)_{ta}\\
+&+\alpha_7 (GetT \times Post \times AS)_{agt}+u_{igta}
+\end{aligned}
+\] What is the alternative hypothesis, stated in terms of these
+coefficients?
+
+\(\Rightarrow\) Top Hat
+\end{frame}
+
+\begin{frame}{Triple differences}
+\protect\hypertarget{triple-differences-2}{}
 Where will we see the treatment effect?
 
 \begin{itemize}
@@ -1289,8 +1309,19 @@ the after school program effects.
                     \OperatorTok{+}\NormalTok{post}\OperatorTok{*}\NormalTok{aftsch}\OperatorTok{*}\NormalTok{treat}
                     \OperatorTok{|}\DecValTok{0}\OperatorTok{|}\DecValTok{0}\OperatorTok{|}\NormalTok{class,}
 \NormalTok{                    scores)}
+
+\NormalTok{regdid3dinterfe\textless{}{-}}\KeywordTok{felm}\NormalTok{(read4}\OperatorTok{\textasciitilde{}}\NormalTok{post}\OperatorTok{+}\NormalTok{treat}\OperatorTok{+}\NormalTok{aftsch}
+                    \OperatorTok{+}\NormalTok{post}\OperatorTok{*}\NormalTok{treat}\OperatorTok{+}\NormalTok{treat}\OperatorTok{*}\NormalTok{aftsch}\OperatorTok{+}\NormalTok{post}\OperatorTok{*}\NormalTok{aftsch}
+                    \OperatorTok{+}\NormalTok{post}\OperatorTok{*}\NormalTok{aftsch}\OperatorTok{*}\NormalTok{treat}
+                    \OperatorTok{|}\NormalTok{class}\OperatorTok{|}\DecValTok{0}\OperatorTok{|}\NormalTok{class,}
+\NormalTok{                    scores)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in chol.default(mat, pivot = TRUE, tol = tol): the matrix is either
+## rank-deficient or indefinite
+\end{verbatim}
 \end{frame}
 
 \begin{frame}[fragile]{Triple differences: Simulation}
@@ -1299,41 +1330,45 @@ the after school program effects.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{stargazer}\NormalTok{( regdid3d,regdid3dinter, }\DataTypeTok{type=}\StringTok{"latex"}\NormalTok{,}\DataTypeTok{no.space=}\OtherTok{TRUE}\NormalTok{,  }\DataTypeTok{omit.stat =} \StringTok{"all"}\NormalTok{, }\DataTypeTok{header=}\OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{stargazer}\NormalTok{( regdid3d,regdid3dinter,regdid3dinterfe,}
+           \DataTypeTok{type=}\StringTok{"latex"}\NormalTok{,}\DataTypeTok{no.space=}\OtherTok{TRUE}\NormalTok{,  }\DataTypeTok{omit.stat =} \StringTok{"all"}\NormalTok{,}
+           \DataTypeTok{add.lines =} \KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Class FE"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{)),}
+           \DataTypeTok{header=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{table}[!htbp] \centering 
   \caption{} 
   \label{} 
-\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
- & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-3} 
-\\[-1.8ex] & \multicolumn{2}{c}{read4} \\ 
-\\[-1.8ex] & (1) & (2)\\ 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & \multicolumn{3}{c}{read4} \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
 \hline \\[-1.8ex] 
- post & 4.868$^{***}$ & 7.850$^{***}$ \\ 
-  & (1.197) & (1.907) \\ 
-  treat & 15.815$^{***}$ & 14.287$^{***}$ \\ 
-  & (3.709) & (2.639) \\ 
-  aftsch &  & 19.479$^{***}$ \\ 
-  &  & (1.764) \\ 
-  post:treat & 4.640$^{**}$ & 11.045$^{***}$ \\ 
-  & (2.071) & (2.323) \\ 
-  treat:aftsch &  & $-$0.585 \\ 
-  &  & (2.469) \\ 
-  post:aftsch &  & $-$8.220$^{***}$ \\ 
-  &  & (2.609) \\ 
-  post:treat:aftsch &  & $-$9.339$^{***}$ \\ 
-  &  & (3.129) \\ 
-  Constant & 80.400$^{***}$ & 71.851$^{***}$ \\ 
-  & (3.353) & (2.446) \\ 
+ post & 4.868$^{***}$ & 7.850$^{***}$ & 6.897$^{***}$ \\ 
+  & (1.197) & (1.907) & (1.466) \\ 
+  treat & 15.815$^{***}$ & 14.287$^{***}$ &  \\ 
+  & (3.709) & (2.639) & (0.000) \\ 
+  aftsch &  & 19.479$^{***}$ & 17.944$^{***}$ \\ 
+  &  & (1.764) & (1.531) \\ 
+  post:treat & 4.640$^{**}$ & 11.045$^{***}$ & 11.944$^{***}$ \\ 
+  & (2.071) & (2.323) & (1.938) \\ 
+  treat:aftsch &  & $-$0.585 & 1.343 \\ 
+  &  & (2.469) & (2.080) \\ 
+  post:aftsch &  & $-$8.220$^{***}$ & $-$6.119$^{***}$ \\ 
+  &  & (2.609) & (2.111) \\ 
+  post:treat:aftsch &  & $-$9.339$^{***}$ & $-$11.322$^{***}$ \\ 
+  &  & (3.129) & (2.661) \\ 
+  Constant & 80.400$^{***}$ & 71.851$^{***}$ &  \\ 
+  & (3.353) & (2.446) &  \\ 
  \hline \\[-1.8ex] 
+Class FE & No & No & Yes \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 \end{tabular} 
 \end{table}
 \end{frame}
@@ -1341,7 +1376,13 @@ the after school program effects.
 \begin{frame}{Triple differences: Simulation}
 \protect\hypertarget{triple-differences-simulation-4}{}
 The simple DID specification underestimates of the true treatment
-effect.\textbf{Why?}
+effect. \textbf{Why?}
+\end{frame}
+
+\begin{frame}{Triple differences: Simulation}
+\protect\hypertarget{triple-differences-simulation-5}{}
+The simple DID specification underestimates of the true treatment
+effect. \textbf{Why?}
 
 \begin{itemize}
 \item
@@ -1428,8 +1469,8 @@ The key assumption:
   changes in the control group are a good counterfactual for the change
   in the treatment group
 \item
-  test these assumptions are very similar to the methods we have already
-  discussed.
+  tests of these assumptions are very similar to the methods we have
+  already discussed.
 \end{itemize}
 
 The main difference:

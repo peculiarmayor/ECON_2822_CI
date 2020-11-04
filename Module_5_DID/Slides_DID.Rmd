@@ -504,6 +504,9 @@ allscores$post[allscores$year%in%c(2001,2002,2003,2004,2005)]<-1
 allscores <- fastDummies::dummy_cols(allscores, select_columns = "year")
 
 regdidall2<-felm(read4~treat
+                 +year_1995+year_1996+year_1997+year_1998
+                 +year_1999+year_2001+year_2002+year_2003
+                 +year_2004+year_2005
                  +year_1995*treat+year_1996*treat+year_1997*treat+year_1998*treat
                  +year_1999*treat+year_2001*treat+year_2002*treat+year_2003*treat
                  +year_2004*treat+year_2005*treat,
@@ -597,6 +600,9 @@ Clustering standard errors can be done in R using the felm function:
  \tiny
 ```{r didinf, results="asis"} 
 regdidall3<-felm(read4~treat
+                 +year_1995+year_1996+year_1997+year_1998
+                 +year_1999+year_2001+year_2002+year_2003
+                 +year_2004+year_2005
                  +year_1995*treat+year_1996*treat+year_1997*treat+year_1998*treat
                  +year_1999*treat+year_2001*treat+year_2002*treat+year_2003*treat
                  +year_2004*treat+year_2005*treat
@@ -684,6 +690,19 @@ Y_{i,a,g,t}=&\alpha_0+\alpha_1 GetT_{g}+\alpha_2 AS_{a}+\alpha_3 Post_{t}\\
 &+\alpha_7 (GetT \times Post \times AS)_{agt}+u_{igta}
 \end{aligned}
 $$
+
+##  Triple differences
+
+$$
+\begin{aligned}
+Y_{i,a,g,t}=&\alpha_0+\alpha_1 GetT_{g}+\alpha_2 AS_{a}+\alpha_3 Post_{t}\\
+&+\alpha_4 (GetT \times Post)_{gt}+\alpha_5 (GetT \times AS)_{ga}+\alpha_6 (Post \times AS)_{ta}\\
+&+\alpha_7 (GetT \times Post \times AS)_{agt}+u_{igta}
+\end{aligned}
+$$
+What is the alternative hypothesis, stated in terms of these coefficients?
+
+$\Rightarrow$ Top Hat
 
 ##  Triple differences
 
@@ -800,6 +819,12 @@ regdid3dinter<-felm(read4~post+treat+aftsch
                     |0|0|class,
                     scores)
 
+regdid3dinterfe<-felm(read4~post+treat+aftsch
+                    +post*treat+treat*aftsch+post*aftsch
+                    +post*aftsch*treat
+                    |class|0|class,
+                    scores)
+
 ```
 
 ##  Triple differences: Simulation
@@ -807,14 +832,23 @@ regdid3dinter<-felm(read4~post+treat+aftsch
 \tiny
 ```{r tripdidc, results="asis"}
 
-stargazer( regdid3d,regdid3dinter, type="latex",no.space=TRUE,  omit.stat = "all", header=FALSE)
+stargazer( regdid3d,regdid3dinter,regdid3dinterfe,
+           type="latex",no.space=TRUE,  omit.stat = "all",
+           add.lines = list(c("Class FE", "No", "No", "Yes")),
+           header=FALSE)
 
 ```
 
 ##  Triple differences: Simulation
 
 
-The simple DID specification underestimates of the true treatment effect.**Why?**
+The simple DID specification underestimates of the true treatment effect. **Why?**
+
+
+##  Triple differences: Simulation
+
+
+The simple DID specification underestimates of the true treatment effect. **Why?**
 
 - the coefficient gives the **ATE** on the treated classes in the post period. Since 50\% of students were already treated through the after school program the ATE is halved. 
 
@@ -873,7 +907,7 @@ The key assumption:
 
 - changes in the control group are a good counterfactual for the change in the treatment group
 
-- test these assumptions are very similar to the methods we have already discussed.
+- tests of these assumptions are very similar to the methods we have already discussed.
 
 The main difference:
 
