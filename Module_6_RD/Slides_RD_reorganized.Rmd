@@ -558,9 +558,47 @@ stargazer(shpestim, type="latex", header=FALSE)
 
 ## RD Estimation: Sharp
 
-It is helpful to see how the coefficients estimated above translate to the RD graph. 
+$$
+Y_i=\alpha+\tau D_i+\beta(R_i-c)+\gamma (R_i-c)*D_i+u_i \text{ for }  c-h\leq R_i< c+h. 
+$$
 
-ADD Stylized graph and top hat question
+How do these coefficients translate to the RD graph?
+
+$\Rightarrow$ Top Hat
+
+```{r style}
+stylized<-ggplot(sharp_mean, aes(x=runminc, y=outbinmean))+ 
+         geom_vline(xintercept = 0)+
+         geom_segment(aes(x = 0, xend = 3, 
+                          y = shpestim$coefficients[1],
+                          yend = shpestim$coefficients[1]
+                                 +3*shpestim$coefficients[3]))+
+         geom_segment(aes(x = -3, xend = 0,
+                          y = shpestim$coefficients[1]
+                              + shpestim$coefficients[2]
+                              +(-3*( shpestim$coefficients[3]+ shpestim$coefficients[4])), 
+                          yend = shpestim$coefficients[1]
+                              + shpestim$coefficients[2]))+
+          #adding some labeling for course notes:
+          annotate("text", x = 0.75, y = 64.8,
+                   label = "Treated~Intercept~is" ,parse = TRUE)+
+          annotate("text", x = -0.6, y = 54, 
+                   label = "Untreated~Intercept~is" ,parse = TRUE)+
+          annotate("text", x = -2, y = 64,
+                   label = "Treated~slope~is" ,parse = TRUE)+
+          annotate("text", x = 2, y = 54, 
+                   label = "Untreated~slope~is" ,parse = TRUE)+
+          annotate("text", x = -1, y = 58, 
+                   label = "TREATED" ,parse = TRUE)+
+          annotate("text", x = 1, y = 58, 
+                   label = "UNTREATED" ,parse = TRUE) 
+```
+
+
+```{r stylea}
+
+stylized
+```
 
 ## RD Estimation: Sharp
 
