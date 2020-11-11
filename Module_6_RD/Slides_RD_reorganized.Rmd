@@ -262,7 +262,7 @@ Example:
 
 RD estimations can be done quite easily in a regression framework.
 
-Step 1: Selecting a bandwidth, $h$, that will determine the regression sample on either side of the threshold point $c$.
+Step 1: Selecting a bandwidth, $b$, that will determine the regression sample on either side of the threshold point $c$.
 
 - bandwith selection involves thinking about the tradeoff between sample size and group comprability
 
@@ -311,7 +311,7 @@ To estimate the causal effect of $D_i$ on some outcome $Y_i$, we simply take the
 
 \footnotesize
 $$
-\lim\limits_{x \rightarrow c}E[Y_i|X_i=x]-\lim\limits_{x \leftarrow c}E[Y_i|X_i=x]=\lim\limits_{x \rightarrow c}E[Y_i(1)|X_i=x]-\lim\limits_{x \leftarrow c}E[Y_i(0)|X_i=x]
+\lim\limits_{r \rightarrow c}E[Y_i|R_i=r]-\lim\limits_{r \leftarrow c}E[Y_i|R_i=r]=\lim\limits_{r \rightarrow c}E[Y_i(1)|R_i=r]-\lim\limits_{r \leftarrow c}E[Y_i(0)|R_i=r]
 $$
 
 \normalsize

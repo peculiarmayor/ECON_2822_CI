@@ -136,7 +136,7 @@ I will spare you the matrix math needed to dive deeper into this. Suffice to say
 
 Clustering in R: 
 
-I use the `NOxEmissions` dataset from the `robustbase` package. This is a dataset of hourly $NO_x$ readings, including $NO_x$ concentration, auto emissions and windspeed. We are going to use the observation date as our cluster variable. This allows for arbitrary dependence between observations in the same day, and zero correlation across days. In this reasonable? ... Maybe. But we'll go with it for now: 
+I use the `NOxEmissions` dataset from the `robustbase` package. This is a dataset of hourly $NO_x$ readings, including $NO_x$ concentration, auto emissions and windspeed. We are going to use the observation date as our cluster variable. This allows for arbitrary dependence between observations in the same day, and zero correlation across days. Is this reasonable? ... Maybe. But we'll go with it for now: 
  
 ```{r clust, echo=TRUE, results="asis"}
 nox <- as.data.frame(NOxEmissions) %>%
