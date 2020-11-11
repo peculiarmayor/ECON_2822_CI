@@ -22,6 +22,7 @@ library(stargazer)
 library(robustbase)
 library(wooldridge)
 library(magick)
+library(lm.beta)
 ```
 
 ## Odds and Ends
@@ -37,6 +38,12 @@ library(magick)
     - Conley Standard errors
     
 - Confidence intervals for prediction
+
+    - For a particular average
+    
+    - For a particular unit
+    
+- Standardizing
 
 
 
@@ -579,5 +586,126 @@ CI&=[119.64-1.96*(20.239); 119.64+1.96*(20.239)]\\
 &=[79.972;159.308]
 \end{aligned}
 $$
+
+## Standardizing
+
+
+Standardizing variables eliminates the units:
+
+- makes it possible to compare the magnitude of estimates across independent variables. 
+
+- makes interpretation easier if you have variables with weird arbitrary units that are unfamiliar to people.  
+
+## Standardizing
+
+Suppose we have a regression with two variables, $x_1$ and $x_2$:
+
+$$
+y=\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2x_2+\hat{u}
+$$
+
+A linear regression must go through the point of averages:
+
+- if we plugged in $\bar{x}_1$ and $\bar{x}_2$, we would predict $\bar{y}$:
+
+$$
+\bar{y}=\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2
+$$
+
+## Standardizing
+
+We can subtract the second equation from the first to get:
+$$
+\begin{aligned}
+\hat{y}-\bar{y}&=(\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2
+x_2+\hat{u})-(\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2)\\
+&=\hat{\beta}_1( x_1-\bar{x}_1) +\hat{\beta}_2(
+x_2-\bar{x}_2)+\hat{u}
+\end{aligned}
+$$
+Dividing both sides of this equation by the standard deviation of $y$, $\sigma_y$ and multiplying each independent variable by $1=\frac{\sigma_x}{\sigma_x}$, we can get the regression into standard units: 
+
+$$
+(\frac{y-\bar{y}}{\hat{\sigma}_y})=\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1(\frac{x_1-\bar{x}_1}{\hat{\sigma}_{x_1}})+\frac{\hat{\sigma}_{x_2}}{\hat{\sigma}_y}\hat{\beta}_2(\frac{x_2-\bar{x}_2}{\hat{\sigma}_{x_2}})+\frac{\hat{u}}{\hat{\sigma}_y}
+$$
+
+## Standardizing
+
+Controlling for $x_2$ a **one standard deviation** increase in $x_1$ leads to a $\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1$ **standard deviation** increase in the predicted $y$. 
+
+This is the standardized coefficient or "beta" coefficient.
+
+
+It is also possible to only standardize some variables ( you will need an intercept in this case).
+
+
+
+## Standardizing
+
+In R, we can get these coefficients by using the `scale()` command in `R`.  
+
+We use the bwght2 dataset to look at how parent ages correlate with birth weights. (Note: birth weights here will be measured in grams). 
+
+I estimate four different regressions of the type 
+$$
+birthweight_i=\beta_0+\beta_1 motherage_i+\beta_2 fatherage_i+\epsilon_i
+$$
+
+scaling either the dependent and/or independent variables.
+
+## Standardizing
+\tiny
+```{r scaling, echo=TRUE, results="asis"}
+
+bwght<-bwght2
+
+reg1<-lm(bwght~mage+fage, bwght)
+reg2<-lm(scale(bwght)~scale(mage)+scale(fage), bwght)
+reg3<-lm(scale(bwght)~mage+fage, bwght)
+reg4<-lm(bwght~scale(mage)+scale(fage), bwght)
+
+meandep1<-round(mean(bwght$bwght),2)
+meandep2<-round(mean(scale(bwght$bwght)),2)
+sddep1<-round(sd(bwght$bwght),2)
+sddep2<-round(sd(scale(bwght$bwght)),2)
+```
+
+
+## Standardizing
+\tiny
+```{r scalinga, echo=TRUE, results="asis"}
+
+stargazer(reg1,reg2, reg3, reg4, type = "latex" , header=FALSE,omit.stat = "all",
+          add.lines=list(c("Mean",meandep1,meandep2, meandep2, meandep1 ),
+                         c("SD",sddep1,sddep2, sddep2, sddep1 )))
+
+```
+
+
+## Standardizing
+\tiny
+Interpreting column 1:
+
+- A mother that is **a year** older predicts a birthweight that is 3.992 **grams** less (not significant).
+
+- A father that is **a year** older predicts a birthweight that is 9.313 **grams** more (significant).
+
+Interpreting column 2:
+
+- A mother whose age is **one standard deviation higher** predicts a birthweight that is 0.033 **standard deviations** lower (not significant).
+
+- A father whose age is **one standard deviation higher** predicts a birthweight that is 0.092 **standard deviations** higher (significant).
+
+Interpreting column 3:
+
+- A mother that is **a year** older predicts a birthweight that is 0.007 **standard deviations** lower (not significant).
+
+- A father that is **a year** older predict a birthweight that is 0.016 **standard deviations** higher (significant).
+
+Interpreting column 4:
+
+- A mother whose age is **one standard deviation higher** predicts a birthweight that is 19.044 **grams** lower (not significant).
+
+- A father whose age is **one standard deviation higher** predicts a birthweight that is 53.205 **grams** higher (significant).
 
 
