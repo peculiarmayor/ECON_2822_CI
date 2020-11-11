@@ -492,8 +492,211 @@ Notes:
 
 ### Interactions with continuous variables
 
-## Non-linear estimation strategies
+## Binairy Dependent variables
+
+### Linear Probability Models
+
+Most of the models we have seen have had continuous dependent variables: the $y$ variable was some quantitative amount that took on a range of possible values (a test score, a weight,...). Sometimes though $y$ can be a dummy variable, taking on either the value 1 or 0. What changes when we have a binairy variable on the left hand side?
+
+$$
+y=\beta_0+\beta_1x_1+...+\beta_kx_k+u
+$$
+
+
+- It no longer makes sense to interpret $\beta_j$ as the unit change in $y$ given a one-unit increase in $x_j$ holding all other factors fixed. Indeed, $y$ either changes from $0\rightarrow 1$, from $1 \rightarrow 0$ or doesn't change. 
+
+- The $\beta_j$'s still have a useful interpretation though: each $\beta_j$ measures the change in the probability of sucess when $x_j$ changes by one unit holding all other factors constant.
+
+$$
+Pr(y=1|x)=\beta_0+\beta_1x_1+...+\beta_kx_k
+$$
+
+#### Example:
+
+Let $inlf$ ("in the labor force") be a binary variable indicating labor force participation by a married woman in 1975. $inlf=1$ if the woman reports working for a wage outside the home at some point during the year, and zero otherwise. Our independent variables might include:
+
+- husbands earnings ($nwifeinc$, measured in thousands of dollars)
+
+- years of education ($educ$)
+
+- past years of labor market experience ($exper$)
+
+- age ($age$)
+
+- number of children less than six years old ($kidslt6$) 
+
+- number of kids between 6 and 18 years of age ($kidsge6$)
+
+We estimate the following model using the `mroz` data that is part of the `wooldridge` package:
+
+$$
+inlf=\beta_0+\beta_1 nwifeinc+\beta_2educ+\beta_3 exper+\beta_4exper^2+\beta_5age+\beta_6kidslt6+\beta_7kidsge6+u
+$$
+
+
+```{r linprob, echo=TRUE}
+mroz$exper2<-mroz$exper^2
+reg1<-lm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz)
+summary(reg1)
+
+```
+
+As an example, given that this is a linear probability model, we would interpret the coefficient on $educ$ as: holding all else fixed, an additional year of education increases predicted probability of labor force participation by 0.038, or 3.8 percentage points. 
+
+The graph below depicts the probability of labor force participation and $educ$. The other independent variables, for the purpouses of this example, are fixed at the values $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$.
+
+![]("images\Picture1.png")
+
+For a woman with these characteristics, the relationship between years of education and the probability of being in the labor force is given by:
+
+$$
+\begin{aligned}
+Pr(inlf=1|educ)&=(0.585+(-0.003)*50+(0.039)*5+(-0.001)*5^2+(-0.016)*30+(-0.262)*1)+0.038*educ\\
+&=-0.146+0.038educ
+\end{aligned}
+$$
+
+#### Linear Probability Model Drawbacks: 
+
+1) Because this is a linear regression, we are trying to fit a line to the data. This means that we can get predicted probabilities that are negative or greater than one. We can see here that the predicted probability of labor force participation for women with education that is below 3.84 years is negative. Similarly, if a woman has 31 years of education it would be greater than one. This isn't too much of a concern here because in the sample few women will fall in those ranges. Nevertheless, the predicted probabilities from our regression aren't bound between 0 and 1.
+
+2) A related problem: a linear probability model implies that the oucome is linearly related to the independent variables. THis is not possible with probabilities. In the previous example, an additional child reduces the probability of working by 0.262. Thus our model implies that going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible.
+
+3) This model uses the idea that the probability that the dummy is equal to one is actually a function of our $x$'s, which means the variance of the dummy is a function of our $x$'s. Indeed, when $y$ is a binary variable 
+
+$$
+Var(y|x)=p(x)[1-p(x)]
+$$
+where $p(x)$ is a shorthand for the probability of success $p(x)=\beta_0+\beta_1x_1+...+\beta_kx_k$. This means that there must be heteroskedasticity in the linear probability model. Thus you should always use **heteroskedasticity robust standard errors** with linear probability models.
 
 ### Logits
+
+How do we address the drawbacks of linear probability models? With **logistic regressions**, which are estimated via maximum likelihood methods rather than OLS. 
+
+Logits differ from the linear probability model in what kind of function is used for the estimated probability. 
+
+In linear probability models, we have
+
+$$
+Pr(y=1|x_1, x_2)=\beta_0+\beta_1x_1+\beta_2x_2.
+$$
+With a logit, we have
+$$
+Pr(y=1|x_1, x_2)=\frac{e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}{1+e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}=\Lambda(\beta_0+\beta_1x_1+\beta_2x_2)
+$$
+
+
+
+
+where $\Lambda$ is commonly used notation to represent the complext logit function.
+
+Why would we ever pick a functional form for the probability that looks as complicated as $\Lambda$? Because it is bounded between 0 and 1 (so our predictions make sense), and it has nice statistical properties (which we will not get into). 
+
+One important thing to note about the estimation of logit models is that `R` output will not give you the marginal effect of one more unit of $x_j$ on the probability of $y$ taking the value 1 ( $\frac{\partial Pr(y=1|x)}{\partial x_j}$). Instead it reports the **log-odds** by default, which are not the same as marginal effects!
+
+To get marginal effects, we need to do a couple more steps. This is because these models are **non-linear**, such that the exact marginal effect of $x_j$ on $y$ **chages depending on the other values of x**. Therefore we have a bunch of options for where we calculate the marginal effects at. In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. In `R` we can also specify any values of our independent variables to evaluate our marginal effects precisely at those values. Note that this is in contrast to the constant marginal effect of $x_j$ on $Pr(y=1|x)$ found in the linear probability model, and is another potential benefit of running a logit model. 
+
+#### Example:
+
+I return to the previous example, looking at laborforce participation using the `mroz` data. 
+
+In `R` we can estimate a logistic regression with the `glm()` function. Running `summary()` will then get us the log-odds.
+
+
+```{r logit, echo=TRUE}
+reglogit1<-glm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz, family="binomial")
+summary(reglogit1)
+
+
+```
+
+To get the marginal effects, we need to run the estimated `glm()` object through the `margins()` function from the **margins** package. 
+```{r logit2, echo=TRUE}
+library(margins)
+marg_reglogit1<-margins(reglogit1)
+
+summary(marg_reglogit1)
+
+```
+
+Recall that by default this computes the average marginal effect for the sample. To insead compute the marginal effect for a particular type of observation
+
+```{r logit3, echo=TRUE}
+
+DF <- data.frame(age=30, 
+                 nwifeinc=50,
+                 exper=5,
+                 exper2=25,
+                 kidsge6=0,
+                 kidslt6=1,
+                 educ=12,
+                 stringsAsFactors=FALSE)
+              
+marg_specific <- margins(reglogit1, data = DF)
+
+summary(marg_specific)
+```
+
+### Example contrasting a logit to a linear probability model (LPM)
+
+
+In sports betting, the Las Vegas point spread is the predicted scoring differential between two opponents as quoted by a sports book in Las Vegas. We are interested in the probability that the favored team actually wins. 
+
+We can run the following regression: 
+
+$$
+\widehat{favwin}_i=\hat{\beta}_0+\hat{\beta}_1spread_i+\hat{\beta}_2favhome_i+\hat{\beta}_3fav25_i+\hat{\beta}_4und25_i+\hat{u}_i
+$$
+Where $favwin$ is a dummy variable indicating whether the favored team won, $spread$ is the Las Vaegas point spread, $favhome$ is a dummy variable indicating whether the favored team is playing at home, $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
+
+I use the `pntsprd` data from the wooldridge package to first estimate the linear probability model: 
+
+```{r logitvlpm, echo=TRUE}
+
+lpm<-felm(favwin~spread+favhome+fav25+und25, data=pntsprd)
+
+summary(lpm, robust=TRUE)
+```
+
+
+Let's compare the LPM model results to those for the equivalent logit:
+
+```{r logitvlpm2, echo=TRUE}
+
+logit<-glm(favwin~spread+favhome+fav25+und25, data=pntsprd, family="binomial")
+marg_logit<-margins(logit)
+summary(marg_logit)
+
+```
+
+You can see that all else constant, a 1 point increase in the Vegas point spread is estimated to increase the predicted probability of winning by 1.78 percentage points using the linear probability model and 2.43 percentage points on average using the logit model. It is generally the case that results using these two different methods will often be quite similar.
+
+To really see the difference between them, we can plot the predicted probabilities (obtained with `$fitted.values` on the `lm()` or `glm()` objects).
+
+
+```{r logitvlpm3, echo=TRUE}
+
+df<- mutate(pntsprd, lpm_prob=lpm$fitted.values,
+            logit_prob=logit$fitted.values)
+
+plot<-df%>%
+  ggplot(aes(x=spread))+
+  geom_point(aes(y=lpm_prob, colour="LPM"), alpha=0.6)+
+  geom_point(aes(y=logit_prob, colour="Logit"), alpha=0.6)+
+  geom_hline(yintercept = 1, alpha=0.7)+
+  geom_hline(yintercept = 0,alpha=0.7)+
+  scale_colour_manual("Model",
+                      breaks=c("LPM", "Logit"),
+                      values=c("blue", "forestgreen"))+
+  lims(y=c(0,1.4))+
+  labs(title="Predicted Win Probabilities, LPM",
+       x="Spread",
+       y="Probability")
+plot
+  
+```
+
+
+We can see straightaway that we estimated probabilities greater than one with the linear probability model (in green) for high point spreads, and that the logit probabilities (blue) never exceed one. Additionally, you can see that the effect of one additional point in the spread has a constant effect for linear probability models, while the slope of the logit probabilities changes depending on the level of the point spread. 
 
 
