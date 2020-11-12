@@ -709,3 +709,279 @@ Interpreting column 4:
 - A father whose age is **one standard deviation higher** predicts a birthweight that is 53.205 **grams** higher (significant).
 
 
+## Binary Dependent variables
+
+What happens if the outcome variable is binary?
+
+- Linear Probability Models
+
+- Logits
+
+
+
+## Linear Probability Models
+
+
+$$
+y=\beta_0+\beta_1x_1+...+\beta_kx_k+u
+$$
+
+
+- It no longer makes sense to interpret $\beta_j$ as the unit change in $y$ given a one-unit increase in $x_j$ holding all other factors fixed:  
+
+  - $y$ either changes from $0\rightarrow 1$, from $1 \rightarrow 0$ or doesn't change. 
+
+- $\Rightarrow\beta_j$ measures the change in the probability of success when $x_j$ changes by one unit holding all other factors constant.
+
+$$
+Pr(y=1|x)=\beta_0+\beta_1x_1+...+\beta_kx_k
+$$
+
+
+## Linear Probability Models
+
+$$
+inlf=\beta_0+\beta_1 nwifeinc+\beta_2educ+\beta_3 exper+\beta_4exper^2+\beta_5age+\beta_6kidslt6+\beta_7kidsge6+u
+$$
+
+- $inlf$ ("in the labor force") is a binary variable indicating labor force participation by a married woman in 1975.
+
+- husbands earnings ($nwifeinc$, measured in thousands of dollars)
+
+- years of education ($educ$)
+
+- past years of labor market experience ($exper$)
+
+- age ($age$)
+
+- number of children less than six years old ($kidslt6$) 
+
+- number of kids between 6 and 18 years of age ($kidsge6$)
+
+## Linear Probability Models
+
+Using the `mroz` data that is part of the `wooldridge` package:
+
+\tiny
+```{r linprob, echo=TRUE}
+mroz$exper2<-mroz$exper^2
+reg1<-lm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz)
+summary(reg1)
+
+```
+
+
+
+## Linear Probability Models
+
+
+For a woman with: $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$, the relationship between years of education and the probability of being in the labor force is given by:
+\tiny
+$$
+\begin{aligned}
+Pr(inlf=1|educ)&=(0.585-0.003*50+0.039*5-0.001*5^2-0.016*30-0.262*1)+0.038*educ\\
+&=-0.146+0.038educ
+\end{aligned}
+$$
+![]("images\Picture1.png"){width=75%}
+
+## Linear Probability Model Drawbacks: 
+
+1) The predicted probabilities from our regression aren't bound between 0 and 1.
+
+2) The outcome is implied to be linearly related to the independent variables. This is not possible with probabilities. (Ex: going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible).
+
+
+3) When $y$ is a binary variable $Var(y|x)=p(x)[1-p(x)]$. This means that there must be heteroskedasticity in the linear probability model. Thus you should always use **heteroskedasticity robust standard errors** with linear probability models.
+
+## Logits
+
+How do we address the drawbacks of linear probability models? 
+
+With **logistic regressions**, which are estimated via maximum likelihood methods rather than OLS. 
+
+## Logits
+
+Logits differ from the linear probability model in the type of function used for the estimated probability. 
+
+In linear probability models, we have
+
+$$
+Pr(y=1|x_1, x_2)=\beta_0+\beta_1x_1+\beta_2x_2.
+$$
+
+With a logit, we have
+$$
+Pr(y=1|x_1, x_2)=\frac{e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}{1+e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}=\Lambda(\beta_0+\beta_1x_1+\beta_2x_2)
+$$
+
+where $\Lambda$ is commonly used notation to represent the complex logit function.
+
+## Logits
+
+Why would we ever pick a functional form for the probability that looks as complicated as $\Lambda$? 
+
+- Because it is bounded between 0 and 1 (so our predictions make sense),
+
+- it has nice statistical properties (which we will not get into). 
+
+
+![]("images\lin_v_log.png"){width=75%}
+
+## Logits
+
+In linear probability models, the marginal effect, $\frac{\partial Pr(y=1|x)}{\partial x_j}$, of $x_j$ on $Pr(y=1|x)$ is constant. 
+
+
+Logit models are **non-linear**: the exact marginal effect of $x_j$ on $Pr(y=1|x)$ **changes depending on the other values of x**.
+
+We can select where we calculate the marginal effects at:
+
+- In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. 
+
+- we could also specify any values of our independent variables to evaluate our marginal effects precisely at those values (Ex: at the mean values of the $x_j$'s).
+
+## Logits
+
+Working with Logits:
+
+- `R` output for a logit will not give you a marginal effect. Instead it reports the **log-odds**. 
+
+- To get marginal effects, we need to request the marginal effects and specify which marginal effects we are interested. 
+
+
+## Logits
+
+Looking at labor force participation using the `mroz` data. 
+
+1) estimate a logistic regression with the `glm()` function. 
+
+2) Running `summary()` will then get us the log-odds.
+
+\tiny
+```{r logit, echo=TRUE}
+reglogit1<-glm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz, family="binomial")
+summary(reglogit1)
+```
+
+
+## Logits
+
+To get the marginal effects:
+
+3) run the estimated `glm()` object through the `margins()` function (from the **margins** package). 
+
+- the default returns the **average marginal effect**
+
+\tiny
+```{r logit2, echo=TRUE}
+library(margins)
+marg_reglogit1<-margins(reglogit1)
+summary(marg_reglogit1)
+```
+
+## Logits
+
+- you can instead compute the marginal effect for a particular type of observation:
+
+\tiny
+```{r logit3, echo=TRUE}
+
+DF <- data.frame(age=30, 
+                 nwifeinc=50,
+                 exper=5,
+                 exper2=25,
+                 kidsge6=0,
+                 kidslt6=1,
+                 educ=12,
+                 stringsAsFactors=FALSE)
+              
+marg_specific <- margins(reglogit1, data = DF)
+
+summary(marg_specific)
+```
+
+## Contrasting a logit to a linear probability model (LPM)
+
+In sports betting, the Las Vegas point spread is the predicted scoring differential between two opponents as quoted in Las Vegas. We are interested in the probability that the favored team actually wins. 
+
+We can run the following regression: 
+$$
+\widehat{favwin}_i=\hat{\beta}_0+\hat{\beta}_1spread_i+\hat{\beta}_2favhome_i+\hat{\beta}_3fav25_i+\hat{\beta}_4und25_i+\hat{u}_i
+$$
+
+- $favwin$ is a dummy variable indicating whether the favored team won, 
+
+- $spread$ is the Las Vegas point spread,
+
+- $favhome$ is a dummy variable indicating whether the favored team is playing at home, 
+
+- $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
+
+## Logit vs. linear probability model 
+
+Using the `pntsprd` data from the wooldridge package: 
+\tiny
+```{r logitvlpm, echo=TRUE}
+lpm<-felm(favwin~spread+favhome+fav25+und25, data=pntsprd)
+summary(lpm, robust=TRUE)
+```
+
+## Logit vs. linear probability model 
+
+\footnotesize
+```{r logitvlpm2, echo=TRUE}
+logit<-glm(favwin~spread+favhome+fav25+und25, 
+           data=pntsprd, family="binomial")
+marg_logit<-margins(logit)
+summary(marg_logit)
+
+```
+
+## Logit vs. linear probability model 
+
+All else constant, a 1 point increase in the Vegas point spread is estimated to increase the predicted probability of winning:
+
+- by 1.78 percentage points using the linear probability model 
+
+- by 2.43 percentage points on average using the logit model. 
+
+It is generally the case that results using these two different methods will often be quite similar.
+
+
+
+## Logit vs. linear probability model 
+
+To see the difference, we plot the predicted probabilities
+
+\small
+```{r logitvlpm3, echo=TRUE}
+#generating the fitted values for both models
+df<- mutate(pntsprd, lpm_prob=lpm$fitted.values,
+            logit_prob=logit$fitted.values)
+
+plot<-df%>%
+  ggplot(aes(x=spread))+
+  geom_point(aes(y=lpm_prob, colour="LPM"), alpha=0.6)+
+  geom_point(aes(y=logit_prob, colour="Logit"), alpha=0.6)+
+  geom_hline(yintercept = 1, alpha=0.7)+
+  geom_hline(yintercept = 0,alpha=0.7)+
+  scale_colour_manual("Model",
+                      breaks=c("LPM", "Logit"),
+                      values=c("blue", "forestgreen"))+
+  lims(y=c(0,1.4))+
+  labs(title="Predicted Win Probabilities, LPM",
+       x="Spread",
+       y="Probability")
+
+```
+
+## Logit vs. linear probability model 
+
+```{r logitvlpm4, echo=TRUE}
+plot
+```
+
+
+
+

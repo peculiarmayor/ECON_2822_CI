@@ -492,11 +492,11 @@ Notes:
 
 ### Interactions with continuous variables
 
-## Binairy Dependent variables
+## Binary Dependent variables
 
 ### Linear Probability Models
 
-Most of the models we have seen have had continuous dependent variables: the $y$ variable was some quantitative amount that took on a range of possible values (a test score, a weight,...). Sometimes though $y$ can be a dummy variable, taking on either the value 1 or 0. What changes when we have a binairy variable on the left hand side?
+Most of the models we have seen have had continuous dependent variables: the $y$ variable was some quantitative amount that took on a range of possible values (a test score, a weight,...). Sometimes though $y$ can be a dummy variable, taking on either the value 1 or 0. What changes when we have a binary variable on the left hand side?
 
 $$
 y=\beta_0+\beta_1x_1+...+\beta_kx_k+u
@@ -505,7 +505,7 @@ $$
 
 - It no longer makes sense to interpret $\beta_j$ as the unit change in $y$ given a one-unit increase in $x_j$ holding all other factors fixed. Indeed, $y$ either changes from $0\rightarrow 1$, from $1 \rightarrow 0$ or doesn't change. 
 
-- The $\beta_j$'s still have a useful interpretation though: each $\beta_j$ measures the change in the probability of sucess when $x_j$ changes by one unit holding all other factors constant.
+- The $\beta_j$'s still have a useful interpretation though: each $\beta_j$ measures the change in the probability of success when $x_j$ changes by one unit holding all other factors constant.
 
 $$
 Pr(y=1|x)=\beta_0+\beta_1x_1+...+\beta_kx_k
@@ -543,7 +543,7 @@ summary(reg1)
 
 As an example, given that this is a linear probability model, we would interpret the coefficient on $educ$ as: holding all else fixed, an additional year of education increases predicted probability of labor force participation by 0.038, or 3.8 percentage points. 
 
-The graph below depicts the probability of labor force participation and $educ$. The other independent variables, for the purpouses of this example, are fixed at the values $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$.
+The graph below depicts the probability of labor force participation and $educ$. The other independent variables, for the purposes of this example, are fixed at the values $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$.
 
 ![]("images\Picture1.png")
 
@@ -560,7 +560,7 @@ $$
 
 1) Because this is a linear regression, we are trying to fit a line to the data. This means that we can get predicted probabilities that are negative or greater than one. We can see here that the predicted probability of labor force participation for women with education that is below 3.84 years is negative. Similarly, if a woman has 31 years of education it would be greater than one. This isn't too much of a concern here because in the sample few women will fall in those ranges. Nevertheless, the predicted probabilities from our regression aren't bound between 0 and 1.
 
-2) A related problem: a linear probability model implies that the oucome is linearly related to the independent variables. THis is not possible with probabilities. In the previous example, an additional child reduces the probability of working by 0.262. Thus our model implies that going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible.
+2) A related problem: a linear probability model implies that the outcome is linearly related to the independent variables. T His is not possible with probabilities. In the previous example, an additional child reduces the probability of working by 0.262. Thus our model implies that going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible.
 
 3) This model uses the idea that the probability that the dummy is equal to one is actually a function of our $x$'s, which means the variance of the dummy is a function of our $x$'s. Indeed, when $y$ is a binary variable 
 
@@ -588,17 +588,20 @@ $$
 
 
 
-where $\Lambda$ is commonly used notation to represent the complext logit function.
+where $\Lambda$ is commonly used notation to represent the complex logit function.
+
+![]("images\lin_v_log.png"){width=75%}
+
 
 Why would we ever pick a functional form for the probability that looks as complicated as $\Lambda$? Because it is bounded between 0 and 1 (so our predictions make sense), and it has nice statistical properties (which we will not get into). 
 
 One important thing to note about the estimation of logit models is that `R` output will not give you the marginal effect of one more unit of $x_j$ on the probability of $y$ taking the value 1 ( $\frac{\partial Pr(y=1|x)}{\partial x_j}$). Instead it reports the **log-odds** by default, which are not the same as marginal effects!
 
-To get marginal effects, we need to do a couple more steps. This is because these models are **non-linear**, such that the exact marginal effect of $x_j$ on $y$ **chages depending on the other values of x**. Therefore we have a bunch of options for where we calculate the marginal effects at. In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. In `R` we can also specify any values of our independent variables to evaluate our marginal effects precisely at those values. Note that this is in contrast to the constant marginal effect of $x_j$ on $Pr(y=1|x)$ found in the linear probability model, and is another potential benefit of running a logit model. 
+To get marginal effects, we need to do a couple more steps. This is because these models are **non-linear**, such that the exact marginal effect of $x_j$ on $y$ **changes depending on the other values of x**. Therefore we have a bunch of options for where we calculate the marginal effects at. In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. In `R` we can also specify any values of our independent variables to evaluate our marginal effects precisely at those values. Note that this is in contrast to the constant marginal effect of $x_j$ on $Pr(y=1|x)$ found in the linear probability model, and is another potential benefit of running a logit model. 
 
 #### Example:
 
-I return to the previous example, looking at laborforce participation using the `mroz` data. 
+I return to the previous example, looking at labor force participation using the `mroz` data. 
 
 In `R` we can estimate a logistic regression with the `glm()` function. Running `summary()` will then get us the log-odds.
 
@@ -619,7 +622,7 @@ summary(marg_reglogit1)
 
 ```
 
-Recall that by default this computes the average marginal effect for the sample. To insead compute the marginal effect for a particular type of observation
+Recall that by default this computes the average marginal effect for the sample. To instead compute the marginal effect for a particular type of observation
 
 ```{r logit3, echo=TRUE}
 
@@ -647,7 +650,7 @@ We can run the following regression:
 $$
 \widehat{favwin}_i=\hat{\beta}_0+\hat{\beta}_1spread_i+\hat{\beta}_2favhome_i+\hat{\beta}_3fav25_i+\hat{\beta}_4und25_i+\hat{u}_i
 $$
-Where $favwin$ is a dummy variable indicating whether the favored team won, $spread$ is the Las Vaegas point spread, $favhome$ is a dummy variable indicating whether the favored team is playing at home, $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
+Where $favwin$ is a dummy variable indicating whether the favored team won, $spread$ is the Las Vegas point spread, $favhome$ is a dummy variable indicating whether the favored team is playing at home, $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
 
 I use the `pntsprd` data from the wooldridge package to first estimate the linear probability model: 
 
@@ -698,5 +701,15 @@ plot
 
 
 We can see straightaway that we estimated probabilities greater than one with the linear probability model (in green) for high point spreads, and that the logit probabilities (blue) never exceed one. Additionally, you can see that the effect of one additional point in the spread has a constant effect for linear probability models, while the slope of the logit probabilities changes depending on the level of the point spread. 
+
+## Mapping in R
+
+Increasingly, applied econometricians are embedding spatial data into our analyses. A whole host of research
+questions and designs become possible if you are able to take advantage of, and work with, the huge volume of spatial data that is rapidly becoming available. That said, working with spatial data takes a few new tricks. We'll first go through a variety of spatial data types, then show off the long-promised (and dramatically over-used) nighttime lights dataset. Coooooool.
+
+First off, we often make a big deal out of spatial data - but it's just data like anything else. Anybody who tries to tell you that spatial data is _completely different_(!) from anything you've seen before is trying to sell you a textbook. The main difference between spatial datasets and any other type of dataset is that spatial data usually come in 2 (or even 3) dimensions. For practical purposes, this usually means that a spatial dataset has latitude and longitude variables in some form or another.
+
+To deal with spatial data, we'll need a bunch of new packages: `GISTools`, `rgdal`, `rgeos`, `maptools`, `raster` (all spatial utilities), and `broom` (this will let us turn spatial data into a format that ggplot2 can handle). We'll also get a new package that will let us more easily deal with dates (because why not): `lubridate`, and a final one which gives us access to a bunch of new color palettes: `RColorBrewer`. The number of packages we're installing here should make you uncomfortable. While you certainly can do spatial data analysis in `R`, it's definitely a challenge compared with some other (proprietary) options out there (Matlab and ArcGIS, for example). The benefits are that you'll have a completely integrated work flow, all in one program; and that once you've wrangled your spatial data to turn it into something useful, `R` is great for everything else. The big problem with doing spatial data in `R` is that there's no unified spatial toolkit, meaning that different data types and formats and functions don't necessarily get along very well. I've tried to make this as headache-free as possible, but just be aware that (in my opinion) spatial data work is not necessarily R's comparative advantage.
+
 
 

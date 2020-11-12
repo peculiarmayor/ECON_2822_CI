@@ -946,9 +946,9 @@ We apply the same methodology as in earlier IV's to estimate the effect of cross
 
 ## RD Estimation: Fuzzy
 
-For the sample with $c-h \leq R_i< c+h$ we run some version (you can include covariates) of the following IV regression
+For the sample with $c-h \leq R_i< c+h$ we run some version (you can include covariates) of the following "reduced form" IV regression
 $$
-Y_i=\pi_0+\pi_1D_i+\pi_2(R_i-c)+\pi_3(R_i-c)*D_i+u_i 
+Y_i=\pi_0+\pi_1Z_i+\pi_2(R_i-c)+\pi_3(R_i-c)*Z_i+u_i 
 $$
 where the first stage is given by
 $$

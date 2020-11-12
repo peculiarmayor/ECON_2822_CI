@@ -1,6 +1,4 @@
 
-knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_chunk$set(fig.width=9, fig.height=5) 
 
 library(dplyr)
 library(ggplot2)
