@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  12 NOV 2020 15:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  13 NOV 2020 12:54
 entering extended mode
 **./Slides_Misc.tex
 (Slides_Misc.tex
@@ -1574,7 +1574,198 @@ Package pdftex.def Info: Slides_Misc_files/figure-beamer/logitvlpm4-1.pdf  used
 (pdftex.def)             Requested size: 307.30002pt x 170.72223pt.
 ) [67
 
- <./Slides_Misc_files/figure-beamer/logitvlpm4-1.pdf>]
+ <./Slides_Misc_files/figure-beamer/logitvlpm4-1.pdf>] [68
+
+] [69
+
+] [70
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [71
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 5.
+) [72
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+Overfull \hbox (205.89763pt too wide) in paragraph at lines 29--29
+[]\T1/lmtt/m/n/6 ## names       : STATEFPEC, COUNTYFPEC, CNTYIDFPEC, NAMEEC,   
+NAMELSADEC, LSADEC, CLASSFPEC, MTFCCEC, FUNCSTATEC,    ALANDEC, AWATEREC,  INTP
+TLATEC,   INTPTLONEC[] 
+ []
+
+
+Overfull \hbox (205.87799pt too wide) in paragraph at lines 29--29
+[]\T1/lmtt/m/n/6 ## min values  :        42,        001,      42001,  Adams, Ad
+ams County,     06,        H1,   G4020,          A, 1013665160, 10168790, +39.8
+489668, -075.0313969[] 
+ []
+
+
+Overfull \hbox (205.88705pt too wide) in paragraph at lines 29--29
+[]\T1/lmtt/m/n/6 ## max values  :        42,        133,      42133,   York,  Y
+ork County,     06,        H6,   G4020,          C,  988299800,  9544848, +42.1
+179518, -080.3507888[] 
+ []
+
+) [73
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [74
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb)
+Overfull \vbox (8.09775pt too high) detected at line 1879
+ []
+
+[75
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [76
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [77
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [78
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [79
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [80
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+<Slides_Misc_files/figure-beamer/spatial9a-1.pdf, id=555, 650.43pt x 361.35pt>
+File: Slides_Misc_files/figure-beamer/spatial9a-1.pdf Graphic file (type pdf)
+<use Slides_Misc_files/figure-beamer/spatial9a-1.pdf>
+Package pdftex.def Info: Slides_Misc_files/figure-beamer/spatial9a-1.pdf  used 
+on input line 9.
+(pdftex.def)             Requested size: 307.30002pt x 170.72223pt.
+) [81
+
+ <./Slides_Misc_files/figure-beamer/spatial9a-1.pdf>]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb)
+Overfull \vbox (32.67267pt too high) detected at line 2137
+ []
+
+[82
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [83
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [84
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [85
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+<Slides_Misc_files/figure-beamer/spatial16a-1.pdf, id=592, 650.43pt x 361.35pt>
+
+File: Slides_Misc_files/figure-beamer/spatial16a-1.pdf Graphic file (type pdf)
+<use Slides_Misc_files/figure-beamer/spatial16a-1.pdf>
+Package pdftex.def Info: Slides_Misc_files/figure-beamer/spatial16a-1.pdf  used
+ on input line 9.
+(pdftex.def)             Requested size: 307.30002pt x 170.72223pt.
+) [86
+
+ <./Slides_Misc_files/figure-beamer/spatial16a-1.pdf>]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [87
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [88
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+<Slides_Misc_files/figure-beamer/spatial18a-1.pdf, id=616, 650.43pt x 361.35pt>
+
+File: Slides_Misc_files/figure-beamer/spatial18a-1.pdf Graphic file (type pdf)
+<use Slides_Misc_files/figure-beamer/spatial18a-1.pdf>
+Package pdftex.def Info: Slides_Misc_files/figure-beamer/spatial18a-1.pdf  used
+ on input line 9.
+(pdftex.def)             Requested size: 307.30002pt x 170.72223pt.
+) [89
+
+ <./Slides_Misc_files/figure-beamer/spatial18a-1.pdf>]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+Overfull \hbox (11.46013pt too wide) in paragraph at lines 23--23
+[]\T1/lmtt/m/n/6 ## names       :       Basin, Lithology, Shale_play, Source, A
+rea_sq_mi, Area_sq_km,       Age_shale[] 
+ []
+
+
+Overfull \hbox (11.4571pt too wide) in paragraph at lines 23--23
+[]\T1/lmtt/m/n/6 ## value       : Appalachian,     Shale,  Marcellus,    EIA,  
+    58326,     151065, Middle Devonian[] 
+ []
+
+) [90
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb) [91
+
+]
+\openout4 = `Slides_Misc.vrb'.
+
+(Slides_Misc.vrb
+<Slides_Misc_files/figure-beamer/spatial22a-1.pdf, id=641, 650.43pt x 361.35pt>
+
+File: Slides_Misc_files/figure-beamer/spatial22a-1.pdf Graphic file (type pdf)
+<use Slides_Misc_files/figure-beamer/spatial22a-1.pdf>
+Package pdftex.def Info: Slides_Misc_files/figure-beamer/spatial22a-1.pdf  used
+ on input line 9.
+(pdftex.def)             Requested size: 307.30002pt x 170.72223pt.
+) [92
+
+ <./Slides_Misc_files/figure-beamer/spatial22a-1.pdf>]
 \tf@nav=\write6
 \openout6 = `Slides_Misc.nav'.
 
@@ -1584,21 +1775,21 @@ Package pdftex.def Info: Slides_Misc_files/figure-beamer/logitvlpm4-1.pdf  used
 \tf@snm=\write8
 \openout8 = `Slides_Misc.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1705.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1705.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2409.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2409.
 (Slides_Misc.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1705.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1705.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2409.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2409.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 25650 strings out of 481565
- 471745 string characters out of 2913711
- 722185 words of memory out of 3000000
- 40000 multiletter control sequences out of 15000+200000
- 619732 words of font info for 126 fonts, out of 3000000 for 9000
+ 25877 strings out of 481565
+ 477168 string characters out of 2913711
+ 724185 words of memory out of 3000000
+ 40100 multiletter control sequences out of 15000+200000
+ 620571 words of font info for 130 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  58i,11n,67p,801b,553s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.e
@@ -1638,9 +1829,9 @@ ppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb
 ><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
 /symbols/msam7.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/typ
 e1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Slides_Misc.pdf (67 pages, 673507 bytes).
+Output written on Slides_Misc.pdf (92 pages, 4108699 bytes).
 PDF statistics:
- 614 PDF objects out of 1000 (max. 8388607)
- 201 named destinations out of 1000 (max. 500000)
- 18495 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 814 PDF objects out of 1000 (max. 8388607)
+ 276 named destinations out of 1000 (max. 500000)
+ 18523 words of extra memory for PDF output out of 20736 (max. 10000000)
 

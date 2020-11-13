@@ -983,5 +983,395 @@ plot
 ```
 
 
+# Spatial Data in R
+
+## Spatial Data in R
+
+Lots of new spatial data becoming available. 
+
+With the right tools these can be used to explore all kinds of questions. 
+
+## Spatial Data in R
+
+Spatial data is just data like anything else. A
+
+The main difference is that spatial data usually come in 2 (or even 3) dimensions (usually latitude and longitude). 
+
+## Spatial Data in R
+
+To deal with spatial data, we'll need a bunch of new packages:
+
+- `GISTools`, `rgdal`, `rgeos`, `maptools`, `raster` (all spatial utilities), 
+
+- `broom` (this will let us turn spatial data into a format that ggplot2 can handle).
+
+- `lubridate` to more easily deal with dates (because why not)
+
+- `RColorBrewer` for new color palettes
+
+Notes:
+
+- The order in which you load packages can matter. 
+
+- other programs (often proprietary) are better at dealing with spatial data analysis. `R` does not have a unified spatial toolkit, meaning that different data types and formats and functions don't necessarily get along very well. 
+
+## Spatial Data in R
+
+```{r spatial2, echo=TRUE,message=FALSE, warning=FALSE}
+library(raster)
+#library(vctrs)
+#library(tibble)
+library(GISTools)
+#library(readr)
+library(dplyr)
+library(lubridate)
+#library(xtable)
+library(ggplot2)
+library(rgeos)
+library(rgdal)
+library(maptools)
+library(broom)
+
+```
 
 
+
+## What the frack?
+
+We're going to use georeferenced data to look at unconventional oil and gas drilling in Pennsylvania. 
+
+We'll start with a spatial data file from the US Cansus Bureau with the shape of each county in the state. 
+
+This data comes in ArcGIS's the _shapefile_ format. 
+
+\tiny
+```{r spatial3, echo=TRUE}
+counties <- shapefile("data/PA_counties.shp")
+counties
+```
+
+
+## Shapefiles
+
+What's in this object? 
+
+- This file contains polygons - outlines of shapes. 
+
+- We can check it was read correctly into R by checking its class:
+```{r spatial4, echo=TRUE}
+class(counties)
+```
+
+Perfect. This is `R`'s version of a polygon shapefile.
+
+## Shapefiles
+
+What's actually in this dataset? 
+
+- We can figure this out by looking at its slots using`slotNames()`
+
+- This is like calling `names()` on a simpler object
+
+\tiny
+```{r spatial5, echo=TRUE}
+slotNames(counties)
+```
+
+\normalsize
+What is all this?
+
+- polygons: the spatial component of our spatial dataset. Each polygon is a long two-variable dataframe with longitudes (x) and latitudes (y) (like a giant connect-the-dots).
+
+- data: a dataframe, where each row is actually associated with one of the polygons in our shapefile.
+
+-`bbox` and `plotOrder`: tell the base plotting commands how to display the data.
+
+- `proj4string`: tells `R` how to display and project the data.
+
+## Shapefiles
+
+Let's look at the data in this shapefile:
+\tiny
+```{r spatial6, echo=TRUE}
+names(counties@data) <- tolower(names(counties@data))
+head(counties@data)
+
+```
+
+\normalsize
+- Mostly identifying information about each county 
+
+- Not that interesting: if we want good stuff we will have to merge it in. 
+
+## Shapefiles: Projections
+
+The world is a sphere (sorry Kyrie Irving) that we are trying to represent on our (flat) computer screens. 
+
+- The projection defines what dimensions to stretch to make this representation happen.
+
+- Spatial objects (should) have a projection attached to them
+
+\tiny
+```{r spatial7, echo=TRUE}
+counties@proj4string
+```
+
+\normalsize
+This tells us that we are using:
+
+- latitude and longitude to identify our data, 
+
+- the North American Datum 83 (a common choice for the US). 
+
+If you're going to combine multiple geographic datasets, it's important that they all use the same projection.
+
+## Let's plot!
+
+1) we extract the shapefile data so we can use it later
+
+2) we convert our polygon into a data frame that `ggplot2` can handle, using `broom`'s `tidy()` function. 
+
+3) we merge, or `join()`, the data that came with the shapefile, into this new dataframe.
+
+We are going to do this process several times, so we'll write a function to take care of it for us:
+
+\tiny
+```{r spatial8, echo=TRUE}
+
+mapToDF <- function(shapefile) {
+      # first assign an identifier to the main dataset
+        shapefile@data$id <- rownames(shapefile@data)
+      # now "tidy" our data to convert it into a dataframe that
+      #is usable by ggplot2
+        mapDF <- tidy(shapefile) %>%
+      # and this data onto the information attached to the shapefile
+        left_join(., shapefile@data, by = "id") %>%
+        as.data.frame()
+return(mapDF)
+}
+```
+
+## Let's plot!
+\tiny
+```{r spatial8a, echo=TRUE}
+paCounties <- mapToDF(counties)
+head(paCounties)
+```
+
+## Let's plot!
+
+
+Once we have this dataset, it's easy to plot using `ggplot2`. 
+
+I start by defining a `ggplot` theme for my maps and then plot the data:
+
+\tiny
+```{r spatial9, echo=TRUE}
+
+myMapThemeStuff <- theme(panel.background = element_rect(fill = NA),
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks = element_line(color = "gray5"),
+    axis.text = element_text(color = "black", size = 10),
+    axis.title = element_text(color = "black", size = 12),
+    legend.key = element_blank()
+)
+
+paMap <- ggplot(data = paCounties, aes(x = long, y = lat, group = id)) +
+    geom_polygon(color = "black", fill = "white") +
+    myMapThemeStuff + 
+    ggtitle("Pennsylvania's counties") +
+    xlab("Longitude") + 
+    ylab("Latitude")
+```
+
+## Let's plot!
+
+```{r spatial9a, echo=TRUE}
+
+paMap
+
+```
+
+
+## A less boring map: Adding wells 
+
+Let's bring in another dataset, with the locations of unconventional wells drilled in Pennsylvania between 2002 and 2013 (courtesy of FracTracker Alliance). 
+
+\tiny
+```{r spatial11, echo=TRUE}
+
+wells <- read.csv("data/PA_wells.csv") %>%as.data.frame()
+
+names(wells) <- tolower(names(wells))
+head(wells)
+```
+
+## A less boring map: Adding wells  
+
+Before we add it to our plot we need to make sure that it uses the same projection. 
+
+It's currently a dataframe - let's turn it into a SpatialPointsDataFrame (like the polygon, except for points) and attach a projection.
+
+\tiny
+```{r spatial12, echo=TRUE}
+
+#the coordinates() function sets spatial coordinates to define a spatial object
+coordinates(wells) <-~longitude + latitude
+class(wells)
+
+#the proj4string() function retreives the projection attributes of the wells object
+proj4string(wells)
+```
+
+## A less boring map: Adding wells 
+
+Since the wells data does not have a projection, we have to assign it ourselves. 
+
+The website did not specify a projection so we select WGS84 (a common global projection) and then re-project it to match our county data's.
+
+\tiny
+```{r spatial14, echo=TRUE}
+
+# assign a projection (WGS84)... check out https://rspatial.org/raster/spatial/6-crs.html 
+# for more info on coordinate reference systems
+proj4string(wells) <- CRS("+proj=longlat +datum=WGS84")
+# re-project this to match the county data
+wells <- spTransform(wells, CRS(proj4string(counties)))
+#check
+proj4string(wells)
+
+#convert back to a dataframe  so that ggplot2 can handle it
+wellsDF <- as.data.frame(wells)
+```
+
+## A less boring map: Adding wells 
+
+Now we'll plot both the counties and the wells on our map:
+
+\tiny
+```{r spatial16, echo=TRUE}
+
+paMap <- ggplot() +
+    geom_polygon(data = paCounties, aes(x = long, y = lat, group = id),
+                 color = "black", fill = "white") +
+    geom_point(data = wellsDF, aes(x = longitude, y = latitude),
+               shape = 21, color = "gray50") +
+    myMapThemeStuff + 
+    ggtitle("Unconventional Drilling in Pennsylvania") +
+    xlab("Longitude") + 
+    ylab("Latitude")
+```
+
+## A less boring map!
+
+```{r spatial16a, echo=TRUE}
+
+paMap
+```
+
+## Got the blue's?
+
+
+Let's plot different colors by year of well drilling. 
+
+1) convert the spud date (drill date) variable to date format, 
+
+2) extract the year (let's actually make pairs of years)
+
+3) convert this into a factor. 
+
+```{r spatial17, echo=TRUE}
+
+wellsDF <- mutate(wellsDF, date = mdy(spud_date), year = year(date)) %>%
+                 mutate(year = 2*(floor(year / 2)))
+
+wellsDF <- mutate(wellsDF, year = as.factor(year))
+```
+
+## Got the blue's?
+
+This is also a great excuse to bring in a great R packages: `RColorBrewer`. 
+
+You can see all of the available color palettes by typeing `display.brewer.all()` into your consol.
+
+```{r spatial18, echo=TRUE}
+
+paMap <- ggplot() +
+    geom_polygon(data = paCounties, aes(x = long, y = lat, group = id),color = "black", fill = "white") +
+    geom_point(data = wellsDF, aes(x = longitude, y = latitude, color = year),shape = 21) +
+    scale_color_brewer(palette="Blues") +
+    myMapThemeStuff + 
+    ggtitle("Unconventional Drilling in Pennsylvania") +
+    xlab("Longitude") + 
+    ylab("Latitude") +
+    labs(color = "Year")
+
+```
+## Got the blue's?
+
+```{r spatial18a, echo=TRUE}
+
+paMap
+```
+
+
+
+## Playing around
+
+Let's bring in some new data from the EIA: a shapefile of the Marcellus shale play - the rock formation from which you can extract hydrocarbons.
+
+\tiny
+```{r spatial19, echo=TRUE}
+
+playBdry <- shapefile("data/ShalePlay_Marcellus_Boundary_EIA_Aug2015_v2.shp")
+playBdry
+
+playBdry@proj4string
+
+```
+
+\normalsize
+This file is WGS84. We'll have to convert it:
+\tiny
+```{r spatial20a, echo=TRUE, warning=FALSE}
+playBdry <- spTransform(playBdry, CRS(proj4string(counties)))
+```
+
+\normalsize
+Use our mapToDF() function from earlier to convert this into a dataframe:
+
+\tiny
+```{r spatial21, echo=TRUE, warning=FALSE}
+bdryDF <- mapToDF(playBdry)
+```
+
+
+## Playing around
+
+```{r spatial22, echo=TRUE}
+
+bigPlot <- ggplot(data = bdryDF, aes(x = long, y = lat)) +
+        geom_polygon(data = paCounties, aes(x = long, y= lat, group = id), color = "gray75", fill = "NA") +
+        geom_path(data = bdryDF, aes(x = long, y = lat), color = "red") +
+        geom_point(data = wellsDF, aes(x = longitude, y = latitude, color = year),shape = 21) +
+        scale_color_brewer(palette="Blues") +
+      # put in a bounding box to restrict ourselves to the
+      # part of the play in PA
+        xlim(counties@bbox[1,1], counties@bbox[1, 2]) +
+        ylim(counties@bbox[2,1], counties@bbox[2, 2]) +
+        ggtitle("Unconventional Drilling in Pennsylvania") +
+        xlab("Longitude") + 
+        ylab("Latitude") +
+        myMapThemeStuff+
+        labs(color = "Year")
+
+```
+
+## Playing around
+
+
+```{r spatial22a, echo=TRUE}
+bigPlot
+```

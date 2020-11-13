@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  12 NOV 2020 15:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.15)  13 NOV 2020 11:44
 entering extended mode
 **./Lecture_Notes_Markdown_Misc.tex
 (Lecture_Notes_Markdown_Misc.tex
@@ -738,30 +738,118 @@ ile (type pdf)
 Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/logitvl
 pm3-1.pdf  used on input line 1411.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[19] [20 <./Lecture_Notes_Markdown_Misc_files/figure-latex/logitvlpm3-1.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1460.
-[21]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1460.
+[19] [20 <./Lecture_Notes_Markdown_Misc_files/figure-latex/logitvlpm3-1.pdf>] [
+21] [22]
+Overfull \hbox (375.49252pt too wide) in paragraph at lines 1663--1663
+[]\T1/lmtt/m/n/10 ## names       : STATEFPEC, COUNTYFPEC, CNTYIDFPEC, NAMEEC,  
+ NAMELSADEC, LSADEC, CLASSFPEC, MTFCCEC, FUNCSTATEC,    ALANDEC, AWATEREC,  INT
+PTLATEC,   INTPTLONEC[] 
+ []
+
+
+Overfull \hbox (375.49252pt too wide) in paragraph at lines 1663--1663
+[]\T1/lmtt/m/n/10 ## min values  :        42,        001,      42001,  Adams, A
+dams County,     06,        H1,   G4020,          A, 1013665160, 10168790, +39.
+8489668, -075.0313969[] 
+ []
+
+
+Overfull \hbox (375.49252pt too wide) in paragraph at lines 1663--1663
+[]\T1/lmtt/m/n/10 ## max values  :        42,        133,      42133,   York,  
+York County,     06,        H6,   G4020,          C,  988299800,  9544848, +42.
+1179518, -080.3507888[] 
+ []
+
+[23] [24]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial10-1.pdf, id=225, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial10-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial10-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+10-1.pdf  used on input line 1871.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[25 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial10-1.pdf>] [26]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial16-1.pdf, id=240, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial16-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial16-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+16-1.pdf  used on input line 2014.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[27]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial18-1.pdf, id=245, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial18-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial18-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+18-1.pdf  used on input line 2051.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[28 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial16-1.pdf>]
+Overfull \hbox (55.24345pt too wide) in paragraph at lines 2079--2079
+[]\T1/lmtt/m/n/10 ## names       :       Basin, Lithology, Shale_play, Source, 
+Area_sq_mi, Area_sq_km,       Age_shale[] 
+ []
+
+
+Overfull \hbox (55.24345pt too wide) in paragraph at lines 2079--2079
+[]\T1/lmtt/m/n/10 ## value       : Appalachian,     Shale,  Marcellus,    EIA, 
+     58326,     151065, Middle Devonian[] 
+ []
+
+[29 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial18-1.pdf>]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial22-1.pdf, id=266, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial22-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial22-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+22-1.pdf  used on input line 2143.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[30] [31 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial22-1.pdf>]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial25-1.pdf, id=286, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial25-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial25-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+25-1.pdf  used on input line 2215.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[32 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial25-1.pdf>] [33]
+<Lecture_Notes_Markdown_Misc_files/figure-latex/spatial32-1.pdf, id=303, 469.75
+5pt x 325.215pt>
+File: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial32-1.pdf Graphic fi
+le (type pdf)
+<use Lecture_Notes_Markdown_Misc_files/figure-latex/spatial32-1.pdf>
+Package pdftex.def Info: Lecture_Notes_Markdown_Misc_files/figure-latex/spatial
+32-1.pdf  used on input line 2364.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[34] [35 <./Lecture_Notes_Markdown_Misc_files/figure-latex/spatial32-1.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2443.
+[36]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2443.
 (Lecture_Notes_Markdown_Misc.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1460.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1460.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2443.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2443.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 13877 strings out of 481565
- 208399 string characters out of 2913711
- 500036 words of memory out of 3000000
- 28669 multiletter control sequences out of 15000+200000
- 590983 words of font info for 121 fonts, out of 3000000 for 9000
+ 13965 strings out of 481565
+ 211213 string characters out of 2913711
+ 500303 words of memory out of 3000000
+ 28708 multiletter control sequences out of 15000+200000
+ 597640 words of font info for 130 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,10n,42p,828b,467s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.e
-nc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mat
-hit.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/l
-m-mathsy.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips
-/lm/lm-ec.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvip
+ 41i,10n,42p,828b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.e
+nc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.
+enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ma
+thit.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/
+lm-mathsy.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvip
 s/lm/lm-ts1.enc}{C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dv
 ips/lm/lm-mathex.enc}<C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fonts/t
 ype1/public/lm/lmbx10.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fo
@@ -788,9 +876,9 @@ pe1/public/lm/lmtk10.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.9/fon
 ts/type1/public/lm/lmtt10.pfb><C:/Users/Claire/AppData/Local/Programs/MiKTeX 2.
 9/fonts/type1/public/lm/lmtti10.pfb><C:/Users/Claire/AppData/Local/Programs/MiK
 TeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Lecture_Notes_Markdown_Misc.pdf (21 pages, 2013823 bytes).
+Output written on Lecture_Notes_Markdown_Misc.pdf (36 pages, 6737945 bytes).
 PDF statistics:
- 328 PDF objects out of 1000 (max. 8388607)
- 86 named destinations out of 1000 (max. 500000)
- 14405 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 456 PDF objects out of 1000 (max. 8388607)
+ 113 named destinations out of 1000 (max. 500000)
+ 14435 words of extra memory for PDF output out of 17280 (max. 10000000)
 
