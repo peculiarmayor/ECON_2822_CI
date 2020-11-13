@@ -45,6 +45,14 @@ library(lm.beta)
     
 - Standardizing
 
+- Binairy dependent variables
+
+    - Linear Probability Models
+
+    - Logits
+    
+- Spatial Data
+
 
 
 ## Non-standard standard errors
@@ -1349,7 +1357,7 @@ bdryDF <- mapToDF(playBdry)
 
 
 ## Playing around
-
+\tiny
 ```{r spatial22, echo=TRUE}
 
 bigPlot <- ggplot(data = bdryDF, aes(x = long, y = lat)) +
@@ -1375,3 +1383,241 @@ bigPlot <- ggplot(data = bdryDF, aes(x = long, y = lat)) +
 ```{r spatial22a, echo=TRUE}
 bigPlot
 ```
+
+## Back to tables
+
+Suppose we're interested in seeing whether there's any correlation between a county's demographics and its well count. To do this, we'll have to
+
+- count the number of wells in each county
+
+- load some demographic data. 
+
+## Counting wells
+
+We can count wells using the `poly.counts()` function from the GISTools package.
+
+\tiny
+```{r spatial23, echo=TRUE}
+# return the number of wells in a county
+wellsInCty <- poly.counts(wells, counties) %>%
+      as.data.frame() %>%
+      mutate(id = rownames(counties@data))
+
+names(wellsInCty) <- c("wells", "id")
+
+wellsInCty <- mutate(wellsInCty, wells = ifelse(is.na(wells) == TRUE, 0, wells))
+head(wellsInCty)
+```
+
+
+## Counting wells
+
+Since this is a spatial object,we can plot it. To do this, `left_join()` our new column into our county dataframe:
+
+\tiny
+```{r spatial24, echo=TRUE}
+
+paCounties <- left_join(paCounties, wellsInCty, by = "id")
+
+countyPlot <- ggplot(data = bdryDF, aes(x = long, y = lat)) +
+    #set the fill color to be the number of wells
+      geom_polygon(data = paCounties, aes(x = long, y = lat, group = id, fill = wells), color = "black")+ 
+      geom_path(data = bdryDF, aes(x = long, y = lat), color = "red") +
+      geom_point(data = wellsDF, aes(x = longitude, y = latitude, color = year),shape = 21) +
+      scale_color_brewer(palette="Blues") +
+      xlim(counties@bbox[1,1], counties@bbox[1, 2]) +
+      ylim(counties@bbox[2,1], counties@bbox[2, 2]) +
+      ggtitle("Unconventional Drilling in Pennsylvania") +
+      xlab("Longitude") + 
+      ylab("Latitude") +
+      scale_fill_gradient(low = "white", high = "deepskyblue3") +
+      labs(fill = "Number of wells") +
+      myMapThemeStuff+
+      labs(color = "Year")
+
+```
+
+## Counting wells
+
+```{r spatial24a, echo=TRUE}
+countyPlot
+```
+
+
+## Regressions in space!
+
+We want to merge this (hard-won) column into our county data. 
+
+Our county data are currently a giant dataframe with one row per lat-long combo.
+
+Instead use the unique county data from the original shapefile (where one county has one row):
+\tiny
+```{r spatial26, echo=TRUE}
+
+countyData <- counties@data %>%
+      as.data.frame() %>%
+      mutate(id = rownames(counties@data)) %>%
+    # for easier merging later
+      rename(fips = countyfpec)
+
+```
+
+\normalsize
+Let's merge this with our well counts, and only keep the few variables that we need:
+
+\tiny
+```{r spatial27, echo=TRUE}
+
+countyWells <- left_join(wellsInCty, countyData, by="id")
+countyWells <-countyWells[,c("fips", "id", "wells")]
+```
+
+## Regressions in space!
+
+
+Finally, let's bring in our (long-promised) demographic data:
+\tiny
+```{r spatial28, echo=TRUE}
+
+countyDemogs <- read.csv("data/PA_county_data.csv")%>%
+        # remove the row for the whole state
+          filter(NAME != "Pennsylvania")
+
+countyDemogs<-countyDemogs[,c('COUNTY', 'NAME', 'Total.Population',
+                              'Median.Age', 'Average.Household.Size')] 
+
+countyDemogs<-countyDemogs%>%rename(fips = 'COUNTY', name = 'NAME', totp = 'Total.Population',
+                  medage = 'Median.Age', avghhsize = 'Average.Household.Size')
+
+```
+\normalsize
+We need to combine this with our wells data, using the FIPS code:
+
+\tiny
+```{r spatial29, echo=TRUE}
+countyWells$fips<-as.numeric(as.character(countyWells$fips))
+
+analysisData <- left_join(countyDemogs, countyWells, by = "fips") 
+
+head(analysisData)
+```
+
+## Regressions in space!
+
+We can finally run a regression!
+\tiny
+```{r spatial30, echo=TRUE}
+
+myReg <- lm(wells~totp+medage+avghhsize, analysisData)
+summary(myReg)
+
+```
+
+
+## Rasters
+
+Let's bring in one last dataset - nighttime lights. 
+
+- This dataset grids up the world into approximately 1x1 km squares, and records a luminosity value, which is a measure of the amount of light eminating out of each pixel. 
+
+- This dataset is available annually; we use the 2012 version here.
+
+- The original file was a TIFF image, which makes this dataset an raster : a giant gridded image. 
+
+- The original file also took up more than 1GB of space, so it has been trimmed down to just Pennsylvania, and exported as an ASCII text file. 
+
+## Rasters
+
+
+Let's load it into R, and make sure that R knows that it's a raster.
+\tiny
+```{r spatial31, echo=TRUE}
+
+# make the raster layer
+lights <- readAsciiGrid("data/palights.txt") %>%
+      raster()
+# create a dataframe version
+lightsDF <- readAsciiGrid("data/palights.txt") %>%
+      as.data.frame()
+names(lightsDF) <- c("dn", "long", "lat")
+```
+
+
+## Rasters
+
+And plot:
+\tiny
+```{r spatial32, echo=TRUE}
+
+lightsPlot <- ggplot(data = lightsDF, aes(x = long, y = lat)) +
+        geom_raster(aes(fill = dn)) +
+        geom_polygon(data = paCounties,aes(x = long, y = lat, group = id), 
+                     color = "deepskyblue2", fill = "NA") +
+        myMapThemeStuff + 
+        labs(fill = "Digital Number") +
+        scale_fill_gradient(low = "black", high = "white")
+```
+
+## Nightlights
+
+
+```{r spatial32a, echo=TRUE}
+
+lightsPlot
+
+```
+
+
+## Nightlights Regression
+
+Say we want to see if there is a correlation between unconventional drilling and nightlights.
+
+To run this regression we need to summarize nightlights into a column of data:
+
+- calculate the average lights value for each county (this might take a little while to run):
+
+\tiny
+```{r spatial33, echo=TRUE}
+
+countyLights <- extract(lights, counties, fun = mean, na.rm = T, df = T) %>%
+        as.data.frame()
+
+countyLights <- mutate(countyLights, id = as.character(ID)) 
+
+countyLights<-countyLights[,c("palights.txt", "id")]
+names(countyLights) <- c("dn", "id")
+```
+
+## Nightlights Regression
+
+\normalsize
+And merge into our county data:
+\tiny
+```{r spatial34, echo=TRUE}
+
+analysisData <- left_join(analysisData, countyLights, by = "id") %>%
+        na.omit()
+head(analysisData)
+```
+
+## Nightlights Regression
+
+
+Now we can run our regression:
+\tiny
+```{r spatial35, echo=TRUE}
+
+myReg2 <- lm(wells~dn, analysisData)
+summary(myReg2)
+
+```
+
+\normalsize
+There doesn't appear to be a correlation between the number of wells drilled in Pennsylvania and nighttime lights:
+
+- these datasets aren't perfect; the wells aren't all active anymore 
+
+- no clear reason for a correlation (except for gas flaring - but that doesn't happen much in PA). 
+
+
+

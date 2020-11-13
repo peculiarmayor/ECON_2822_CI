@@ -1175,7 +1175,7 @@ summary(myReg2)
 
 
 There doesn't appear to be a correlation between the number of wells drilled in Pennsylvaniand nighttime lights. Should we be worried? Not really - these datasets aren't perfect; the wells aren't all active anymore (and we haven't dealt with the time component of these data at all); there's not necessarily a clear reason to think that nighttime lights should be strongly related to fracking anyway (except for gas 
-aring - but that doesn't happen nearly as much in Pennsylvania as it does in North Dakota). Despite the lack of stars on this regression, I hope that this has been a useful exploration of the ways in which you can use R to manipulate spatial data.^[As my econometrics professor once famously said, "This is not Hollywood - do not go looking for stars!"]
+flaring - but that doesn't happen nearly as much in Pennsylvania as it does in North Dakota). Despite the lack of stars on this regression, I hope that this has been a useful exploration of the ways in which you can use R to manipulate spatial data.^[As my econometrics professor once famously said, "This is not Hollywood - do not go looking for stars!"]
 
 
 
