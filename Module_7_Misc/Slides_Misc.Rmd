@@ -595,8 +595,142 @@ CI&=[119.64-1.96*(20.239); 119.64+1.96*(20.239)]\\
 \end{aligned}
 $$
 
-## Standardizing
 
+
+# Regression Interpretation and Variable Transformations
+
+
+## Regression Interpretation 
+
+You must be able to interpret a regression correctly.
+
+3 elements you want to touch upon (the three S'):
+
+1) **Sign**- is the coefficient you are discussing positive or negative? Does the sign of the coefficient match your priors or is it surprising?
+
+2) **Size**- What is the magnitude of the coefficient? Is the effect of $x$ on $y$ economically meaningful or not? Make your interpretation informative to your audience,by being precise.
+
+3) **Significance**- Is the estimate statistically significant? Can we reject that the true coefficient is equal to zero? With what confidence level?
+
+
+## Regression Interpretation 
+
+While it is not incorrect to say the that a one unit increase in $x$ leads to a $\beta$ unit change in $y$, you will generally want to be more precise:
+
+- specify the units of measurement
+    
+- interpret the coefficients appropriately: 
+    
+  - if the regression used a logged variable, a binairy dependent variable, a standardized variable... 
+        
+  - it may be useful to scale the values into more intuitive units. 
+
+- If the regression features a polynomial discuss the difference in the magnitude of the marginal effects at different key values. 
+        
+- If the regression features interaction terms, interpret the implications for different types of observations
+    
+- it is often useful to compare the coefficient to the mean and sd of the dependent variable  to gauge magnitudes
+    
+  
+
+## Scaling
+
+Units of measurement in the data are not always intuitive. 
+
+Suppose I am interested in the following regression: 
+$$
+sleep=\beta_0+\beta_1totwork+\beta_2educ+u
+$$
+Using the `sleep75` data that is part of the `wooldrige` package:
+
+\tiny
+```{r scal, echo=TRUE}
+regsleep1<-lm(sleep~totwrk+educ, sleep75)
+summary(regsleep1)
+```
+
+
+## Scaling
+
+What do these coefficients mean? 
+
+You need to know the units of measurement for each of the variables:
+
+- $educ$ is measured in years of education
+
+- $sleep$ and $totwrk$ are measured in minutes per week. 
+
+**one additional year of education is associated with 13.5 fewer minutes of sleep per week**.
+
+$\Rightarrow$ probably not the most intuitive interpretation
+
+## Scaling the dependent variable
+
+One way, adjustment in interpretation: $13.5$ min per week $=\frac{13.5}{60}=0.23\approx 1/4$ hour per week. 
+
+Rewrite interpretations in terms of hours by dividing the old coefficients by 60:
+$$
+\frac{\hat{\beta}_0}{60};\frac{\hat{\beta}_1}{60};\frac{\hat{\beta}_2}{60}. 
+$$
+
+## Scaling the dependent variable
+
+Alternatively, run the regression after having scaled our $sleep$ variable in terms of hours:
+\tiny
+```{r scal2, echo=TRUE}
+sleep75$sleephrs<-sleep75$sleep/60
+
+regsleep2<-lm(sleephrs~totwrk+educ, sleep75)
+summary(regsleep2)
+```
+
+## Scaling the dependent variable
+
+If we re-scale the dependent variable $y$ by a constant $c$, then the equation we estimate becomes
+
+$$
+\begin{aligned}
+\tilde{y}&=\tilde{\beta}_0+\tilde{\beta}_1x_1+...+\tilde{\beta}_kx_k+u\\
+cy&=c\beta_0+c\beta_1x_1+c\beta_2x2+...+c\beta_kx_k+u.
+\end{aligned}
+$$
+In the example above, $c=\frac{1}{60}$, so the new $\hat{\beta}$'s will be divided by 60 too.
+
+Nothing else about the regression changes ($R^2$, t-stats, p-values). 
+
+
+## Scaling the independent variable
+
+1 minute increase in total work per week predicts a decrease in sleep of 0.0025 hours per week. 
+
+$\Rightarrow$ one hour increase in total work predicts a 60*(0.0025)=0.15 hour decrease in sleep per week.
+
+Scale the variable in R prior to running the regression:
+\tiny
+```{r scal3, echo=TRUE}
+sleep75$totwrkhrs<-sleep75$totwrk/60
+
+regsleep3<-lm(sleephrs~totwrkhrs+educ, sleep75)
+summary(regsleep3)
+```
+
+
+## Scaling the independent variable
+
+The other coefficients will be unchanged.
+
+The coefficient on the scaled variable will adjust accordingly.
+
+In general, if we scale $x$ by $c$, the equation becomes:
+
+$$
+\begin{aligned}
+y&= \beta_0+\tilde{\beta}_1\tilde{x}_1+...+\beta_kx_k+u\\
+&= \beta_0+\frac{\tilde{\beta}_1}{c}(c\tilde{x}_1)+...+\beta_kx_k+u.
+\end{aligned}
+$$
+
+## Standardizing
 
 Standardizing variables eliminates the units:
 
@@ -715,6 +849,317 @@ Interpreting column 4:
 - A mother whose age is **one standard deviation higher** predicts a birthweight that is 19.044 **grams** lower (not significant).
 
 - A father whose age is **one standard deviation higher** predicts a birthweight that is 53.205 **grams** higher (significant).
+
+
+# Logs
+
+## Logs
+
+
+Using log's to transform a variable can greatly improve the fit of your model. 
+
+When you do this, you need to then adjust your interpretation accordingly:
+
+- Linear functions and unit-unit changes
+
+- Logarithmic functions and percent-unit changes
+
+- Exponential functions and Unit-Percent changes
+
+- Log-Log functions and Percent-Percent changes (eg elasticities)
+
+## Linear functions and unit-unit changes
+
+
+If we assume a linear functional form, the model is: 
+$$
+y=\beta_0+\beta_1x.
+$$ 
+
+**Interpretation**:Take the derivative of the expression to get: 
+$$
+\frac{dy}{dx}=\beta_1.
+$$
+
+Rewrite as:
+$$
+\frac{\Delta y}{\Delta x}=\frac{dy}{dx}=\beta_1.
+$$
+Rearranging:
+$$
+\Delta y= \beta_1 \Delta x.
+$$
+Suppose $\Delta x=1$, so that $x$ changes by 1 **unit**. Plugging into the above expression we see that $y$ will change by $\beta_1$ **units**.
+
+
+## Logarithmic functions and percent-unit changes
+
+\bigskip
+
+If we assume a logarithmic functional form, the model is: 
+$$
+y=\beta_0+\beta_1 log(x).
+$$
+**Interpretation:** First take the derivative of our model (recall: if $w=log(v)$ then $\frac{dw}{dv}=\frac{1}{v}$). Thus for our model: 
+$$
+\frac{dy}{dx}=\frac{\beta_1}{x}
+$$ 
+For small changes in $x$ this can be approximately rewritten as:
+$$
+\begin{aligned}
+\frac{\Delta y}{\Delta x}\approx \frac{dy}{dx}&=\frac{\beta_1}{x}\\
+\Rightarrow \Delta y&= \beta_1 \frac{ \Delta x}{x}.
+\end{aligned}
+$$
+If $x$ changes by 10 **percent**, the proportional change in $x$ is 0.1 $\Rightarrow \frac{\Delta x}{x}=0.1$. Plugging into the expression above we see that $y$ will change by $\beta_1*0.1$ **units**. 
+
+## Exponential functions and Unit-Percent changes\
+
+With an exponential functional form, the model is: $y=e^{\beta_0+\beta_1x}$ or 
+$$
+log(y)=\beta_0+\beta_1x.
+$$
+**Interpretation:** Taking the derivative wrt to $x$: $\frac{dlog(y)}{dx}=\beta_1.$ For small changes we can rewrite this as 
+$$
+\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1.
+$$
+Using the fact that $\Delta log(y)=\frac{\Delta y}{y}$:$\Rightarrow \frac{\frac{\Delta y}{y}}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1,$
+we can rearrange and see that 
+$$
+\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \underbrace{\frac{\Delta y}{y}\times100}_{\text{percent change}}=(\beta_1 \Delta x)\times100
+$$
+Suppose $x$ changes by 1  **unit**. The proportional change in $y$ is $\beta_1$ and the percent change in $y$ is $100\times\beta_1$ **percent**. 
+
+## Log-Log functions and \%-\% changes (eg elasticities)\ 
+
+
+If we assume a log-log functional form, the model is 
+$$
+log(y)=\beta_0+\beta_1log(x).
+$$
+**Interpretation:** The derivative of our model is $\frac{dlog(y)}{dx}=\beta_1\frac{1}{x}$. Re-writing it in terms of small changes we get:
+$$
+\begin{aligned}
+\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}&=\beta_1(\frac{1}{x})\\
+\Rightarrow \Delta log(y)&=\beta_1 (\frac{\Delta x}{x})\\
+\Rightarrow \frac{\Delta y}{y}&=\beta_1  (\frac{\Delta x}{x})\\
+\Rightarrow \frac{\Delta y}{y}\times100&=\beta_1  (\frac{\Delta x}{x})\times 100
+\end{aligned}
+$$
+Suppose we know that $x$ changes by 1 **percent**. Plug the value into this expression and we see that $y$ will change by $\beta_1$ **percent**. 
+
+
+
+## Summary:\
+
+
+|Model      |DepVar| IndepVar |How does $\Delta y$ relate to $\Delta x$? |Interpretation       |
+|--------------|--------|----------|----------------|---------------------|
+|Linear     | y    |x         |$\Delta y=\beta_1\Delta x$                | $\Delta y=\beta_1 \Delta x$ |
+|Logarithmic| y |log(x) |$\Delta y=\beta_1\frac{\Delta x}{x}$| $\Delta y=\beta_1 \frac{\% \Delta x}{100}$ |
+|Exponential| log(y) |x |$\frac{\Delta y}{y}=\beta_1\Delta x$| $\% \Delta y=\beta_1 \Delta x \times 100$ |
+|Log-log    | log(y) |log(x)|$\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}$| $\% \Delta y=\beta_1 \%\Delta x$ |
+
+
+
+## Practice:\
+
+**Example 1:** You have data on gas consumption and prices, you estimate the following model
+
+$$
+log(gas)=12-0.21price
+$$
+**How does gas consumption change when price increases by 1 dollar?**
+
+
+## Practice:\
+
+**Example 1:** You have data on gas consumption and prices, you estimate the following model
+
+$$
+log(gas)=12-0.21price
+$$
+**How does gas consumption change when price increases by 1 dollar?**
+$$
+\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \frac{\Delta y}{y}=(-0.21)\times 1= -0.21\Rightarrow \%\Delta y=-21\%
+$$
+
+## Practice:
+
+**Example 2:**
+You have data on corn and beef prices, you estimate the following model
+
+$$
+log(P_{beef})=0.83+0.491log(P_{corn})
+$$
+**How does $P_{beef}$ change is $P_{corn}$ rises by 2\%?**
+
+
+## Practice:
+
+**Example 2:**
+You have data on corn and beef prices, you estimate the following model
+
+$$
+log(P_{beef})=0.83+0.491log(P_{corn})
+$$
+**How does $P_{beef}$ change is $P_{corn}$ rises by 2\%?**
+
+$$
+\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}=0.49\times0.02= 0.00982\Rightarrow +0.982\%
+$$
+
+
+## Practice:
+
+**Example 3:** You have data on CEO salaries (in hundred thousand dollars) and annual firm sales (millions of dollars). You estimate:
+
+$$
+salary=2.23+1.1log(sales)
+$$
+**How does salary change if annual sales increase by 10\%?**
+
+## Practice:
+
+**Example 3:** You have data on CEO salaries (in hundred thousand dollars) and annual firm sales (millions of dollars). You estimate:
+
+$$
+salary=2.23+1.1log(sales)
+$$
+**How does salary change if annual sales increase by 10\%?**
+$$
+\Delta y=\beta_1\frac{\Delta x}{x}=1.1\times0.1=0.11
+$$
+If sales increase by 10\%, CEO salaries are predicted to increase by 0.11 (hundred thousand)= 11,000 dollars.
+
+
+# Quadratics
+
+## Quadratics
+
+
+When interpreting a variable that includes a quadratic (or higher order) polynomial, the marginal effect of the variable are not linear.
+
+Suppose we are interested in the relationship between age and sleep:
+$$
+sleep=\beta_0+\beta_1 age+\beta_2 age^2+u
+$$
+
+
+
+This model allows for the marginal effect of age on sleep to change, along a quadratic functional form. 
+
+To see this, take the derivative of sleep with respect to age:
+$$
+\frac{dsleep}{dage}=\beta_1+2*\beta_2*age.
+$$
+
+## Quadratics
+
+$$
+\frac{dsleep}{dage}=\beta_1+2*\beta_2*age.
+$$
+
+The predicted effect of age on sleep depends on an observations age.  
+
+When interpreting, the marginal effect:
+
+- specify the age at which you are interpreting at,
+
+- give a sense of the marginal effects at different key points of the age distribution. 
+
+## Quadratics
+
+Retrieving the coefficients, we get:
+
+\tiny
+```{r quad, echo=TRUE}
+sleep75$age2<-sleep75$age*sleep75$age
+regquad<-lm(sleep~age+age2, sleep75)
+
+summary(regquad)
+```
+\normalsize
+thus 
+$$
+\frac{dsleep}{dage}=-21.5+0.6*age.
+$$
+
+## Quadratics
+
+$$
+\frac{dsleep}{dage}=-21.5+0.6*age.
+$$
+
+
+If you are 22 years old, our model predicts that a year from now you will be getting 8.3 fewer minutes per week of sleep than now.
+
+If you are currently 60, our model predicts that a year from now you will be getting 14.5 more minutes per week of sleep than now.
+
+Age is predicted to decrease sleep until a person is 35.8 years old, then an additional year is associated with an increase in sleep (where $\frac{dsleep}{dage}=0$).
+
+It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. 
+
+
+
+## Interactions with continuous variables
+
+
+When interpreting interactions with continuous variables,  the marginal effect of the variable are not linear. Include this in your interpretations.
+
+
+Suppose we are interested in the relationship between age, education and sleep:
+$$
+sleep=\beta_0+\beta_1 age+\beta_2 educ+\beta_3 age \times educ+u
+$$
+
+This model allows for the marginal effect of age and education on sleep to be a function of one another. 
+
+To see this, take the partial derivatives of the independent variables 
+
+## Interactions with continuous variables
+
+Similarly, take the derivative of sleep with respect to age:
+$$
+\frac{dsleep}{dage}=\beta_1+\beta_3*educ.
+$$
+
+How age predicts sleeps depends on an observation's education level. 
+
+Similarly, take the derivative of sleep with respect to education:
+
+$$
+\frac{dsleep}{deduc}=\beta_2+\beta_3*age.
+$$
+
+How education predicts sleeps depends on an observation's age. 
+
+## Interactions with continuous variables
+
+Retrieving the coefficients, we get:
+
+\tiny
+```{r inter, echo=TRUE}
+reginter<-lm(sleep~age+educ+age*educ, sleep75)
+
+summary(reginter)
+```
+\normalsize
+thus $\frac{dsleep}{dage}=21.26-1.466*educ$ and $\frac{dsleep}{deduc}=49.97-1.466*age.$
+
+## Interactions with continuous variables
+
+
+To predict the effect of an additional year of education on sleep, you need to specify the age of the observation in question: 
+
+- 17.7 minutes per week more sleep if you are 22 years old 
+
+- 38 minutes per week less sleep if you are 60.
+
+In fact, more education is associated with more sleep until 34 years of age (where $\frac{dsleep}{deduc}=0$), at which point it becomes associated with less sleep.
+
+It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. Graphing them is also an option. 
+
 
 
 ## Binary Dependent variables
