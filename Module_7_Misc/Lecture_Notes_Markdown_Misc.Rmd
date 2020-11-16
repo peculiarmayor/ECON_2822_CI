@@ -27,6 +27,643 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
 
 # The Hodgepodge
 
+
+
+## Regression Interpretation and Variable Transformations
+
+Being able to generate regression results is one thing. Equally important is being able to interpret them correctly. When interpreting regression results, there are typically 3 elements you want to touch upon (the three S'):
+
+1) **Sign**- is the coefficient you are discussing positive or negative? Does the sign of the coefficient match your priors or is it surprising?
+
+2) **Size**- What is the magnitude of the coefficient? Is the effect of $x$ on $y$ economically meaningful or not? While it is not incorrect to say the that a one unit increase in $x$ leads to a $\beta$ unit change in $y$, in order to be able to make your interpretation informative to your audience, you will generally want to be more precise:
+
+    - specify the units of measurement
+    
+    - interpret the coefficients appropriately: if the regression used a logged variable, a binairy dependent variable, a standardized variable...
+    
+    - it may be useful to scale the values into more intuitive units of measurement. 
+    
+    - If the regression features a polynomial discuss the difference in the magnitude of the marginal effects at different key values. 
+    
+    - If the regression features interaction terms, interpret the implications for different types of observations
+    
+    - it is often informative to compare the coefficient to the mean and standard deviation of the dependent variable to give your audience a point of reference with which to gauge magnitudes
+    
+  
+
+3) **Significance**- Is the estimate statistically significant? Can we reject that the true coefficient is equal to zero? With what confidence level?
+
+
+
+
+### Scaling
+
+Sometimes you may find that the units of measurement used for some of the variables in the data you are working with are not very intuitive. 
+
+Suppose I am interested in the following regression: 
+
+$$
+sleep=\beta_0+\beta_1totwork+\beta_2educ+u
+$$
+Using the `sleep75` data that is part of the `wooldrige` package, I run the estimation and get the following
+```{r scal, echo=TRUE}
+
+regsleep1<-lm(sleep~totwrk+educ, sleep75)
+
+summary(regsleep1)
+```
+
+What do these coefficients mean? To answer this I need to know the units of measurement for each of the variables. $educ$ is measured in years of education, which is fairly intuitive but $sleep$ and $totwrk$ are measured in minutes per week. Thus, **one additional year of education is associated with 13.5 fewer minutes of sleep per week**. This is probably not the most intuitive interpretation for most audiences. Hours per week would probably be a more natural way to report this.
+
+#### Scaling the dependent variable\
+
+\bigskip
+
+One way to do this is to simply make the adjustment in our interpretation. $13.5$ min per week is equivalent to $\frac{13.5}{60}=0.23\approx 1/4$ hour per week. So we could just rewrite all of our interpretations in terms of hours by dividing the old coefficients by 60:
+
+$$
+\frac{\hat{\beta}_0}{60};\frac{\hat{\beta}_1}{60};\frac{\hat{\beta}_2}{60}. 
+$$
+Alternatively, it is often just easier to run the regression after having scaled our $sleep$ variable in terms of hours (i.e. dividing the dependent variable by 60 and re-running the regression) as follows:
+
+```{r scal2, echo=TRUE}
+sleep75$sleephrs<-sleep75$sleep/60
+
+regsleep2<-lm(sleephrs~totwrk+educ, sleep75)
+
+summary(regsleep2)
+```
+
+In general, if we re-scale the dependent variable $y$ by a constant $c$, then the equation we estimate becomes
+
+$$
+\begin{aligned}
+\tilde{y}&=\tilde{\beta}_0+\tilde{\beta}_1x_1+...+\tilde{\beta}_kx_k+u\\
+cy&=c\beta_0+c\beta_1x_1+c\beta_2x2+...+c\beta_kx_k+u.
+\end{aligned}
+$$
+In the example above, $c=\frac{1}{60}$, so the new $\hat{\beta}$'s will be divided by 60 too. Nothing else about the regression changes ($R^2$, t-stats, p-values). 
+
+
+#### Scaling the independent variable\
+
+\bigskip
+Things are slightly different is we are scaling an independent variable. Our estimates above say that a 1 minute increase in total work  per week predicts a decrease in sleep of 0.0025 hours per week. This is clearly equivalent to saying that a one hour increase in total work predicts a 60*(0.0025)=0.15 hour decrease in sleep per week (i.e. we can multiply our $\hat{\beta}$ estimate by 60). 
+
+As above, it often makes sense to scale the variable in R prior to running the regression:
+```{r scal3, echo=TRUE}
+sleep75$totwrkhrs<-sleep75$totwrk/60
+
+regsleep3<-lm(sleephrs~totwrkhrs+educ, sleep75)
+
+summary(regsleep3)
+```
+
+When scaling an independent variable, the other coefficients will be unchanged, but the coefficient on the scaled variable will adjust accordingly.
+
+In general, if we scale $x$ by $c$, the equation becomes:
+
+$$
+\begin{aligned}
+y&= \beta_0+\tilde{\beta}_1\tilde{x}_1+...+\beta_kx_k+u\\
+&= \beta_0+\frac{\tilde{\beta}_1}{c}(c\tilde{x}_1)+...+\beta_kx_k+u.
+\end{aligned}
+$$
+
+### Standardizing
+
+Standardizing variables eliminates the units in order to be able to compare the magnitude of estimates across independent variables. This can make interpretation easier if you have variables with weird arbitrary units that are unfamiliar to people.  We can solve this issue by standardizing the variables.
+
+Suppose we have a regression with two variables, $x_1$ and $x_2$:
+
+$$
+y=\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2
+x_2+\hat{u}
+$$
+
+We know that our regression must go through the point of averages: if we plugged in $\bar{x}_1$ and $\bar{x}_2$, we would predict $\bar{y}$:
+
+$$
+\bar{y}=\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2
+$$
+
+
+We can subtract the second equation from the first to get:
+
+$$
+\begin{aligned}
+\hat{y}-\bar{y}&=(\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2
+x_2+\hat{u})-(\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2)\\
+&=\hat{\beta}_1( x_1-\bar{x}_1) +\hat{\beta}_2(
+x_2-\bar{x}_2)+\hat{u}
+\end{aligned}
+$$
+With a little bit of additional algebra, dividing both sides of this equation by the standard deviation of $y$, $\sigma_y$ and multiplying each independent variable by $1=\frac{\sigma_x}{\sigma_x}$. we can get the entire regression into standard units: 
+
+$$
+(\frac{y-\bar{y}}{\hat{\sigma}_y})=\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1(\frac{x_1-\bar{x}_1}{\hat{\sigma}_{x_1}})+\frac{\hat{\sigma}_{x_2}}{\hat{\sigma}_y}\hat{\beta}_2(\frac{x_2-\bar{x}_2}{\hat{\sigma}_{x_2}})+\frac{\hat{u}}{\hat{\sigma}_y}
+$$
+Now we can say that controlling for $x_2$ a one standard deviation increase in $x_1$ leads to a $\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1$ standard deviation increase in the predicted $y$. We call this new term the standardized coefficient or "beta" coefficient.   
+
+We use the bwght2 dataset to look at how parent ages correlate with birth weights. (Note: birth weights here will be measured in grams). I estimate four different regressions of the type 
+
+
+$$
+birthweight_i=\beta_0+\beta_1 motherage_i+\beta_2 fatherage_i+\epsilon_i
+$$
+
+scaling either the dependent and/or independent variables.
+
+
+```{r scaling, echo=TRUE, results="asis"}
+
+
+reg1<-lm(bwght~mage+fage, bwght2)
+reg2<-lm(scale(bwght)~scale(mage)+scale(fage), bwght2)
+reg3<-lm(scale(bwght)~mage+fage, bwght2)
+reg4<-lm(bwght~scale(mage)+scale(fage), bwght2)
+
+meandep1<-round(mean(bwght2$bwght),2)
+meandep2<-round(mean(scale(bwght2$bwght)),2)
+sddep1<-round(sd(bwght2$bwght),2)
+sddep2<-round(sd(scale(bwght2$bwght)),2)
+
+stargazer(reg1,reg2, reg3, reg4, type = "latex" , header=FALSE,
+          add.lines=list(c("Mean",meandep1,meandep2, meandep2, meandep1 ),
+                         c("SD",sddep1,sddep2, sddep2, sddep1 )))
+
+
+```
+
+Interpreting column 1:
+
+- Having a mother that is **a year** older at birth predicts a birthweight that is 3.992 **grams** less (not statistically significant).
+
+- Having a father that is **a year** older at birth predicts a birthweight that is 9.313 **grams** more (highly statistically significant).
+
+Interpreting column 2:
+
+- Having a mother whose age is **one standard deviation higher** at birth predicts a birthweight that is 0.033 **standard deviations** lower (not statistically significant).
+
+- Having a father whose age is **one standard deviation higher** at birth predicts a birthweight that is 0.092 **standard deviations** higher (highly statistically significant).
+
+Interpreting column 3:
+
+- Having a mother that is **a year** older at birth predicts a birthweight that is 0.007 **standard deviations** lower (not statistically significant).
+
+- Having a father that is **a year** older at birth predict a birthweight that is 0.016 **standard deviations** higher (highly statistically significant).
+
+Interpreting column 4:
+
+- Having a mother whose age is **one standard deviation higher** at birth predicts a birthweight that is 19.044 **grams** lower (not statistically significant).
+
+- Having a father whose age is **one standard deviation higher** at birth predicts a birthweight that is 53.205 **grams** higher (highly statistically significant).
+
+
+
+Notes:
+
+- You can also standardize $y$, $x_1$ and $x_2$ directly in the data set and then run your regression on the standardized variables though this involves more coding.
+
+- You do not need to standardize all the variables. You could just standardize $x_1$ and adjust your interpretation accordingly ( you will need an intercept in this case).
+
+
+### Logs
+
+Choosing an appropriate functional form is a critical choice in economic modeling. Using log's to transform a variable can greatly improve the fit of your model by making the underlying relationship between the dependent and independent variables linear. Of course, when you do this, you need to then adjust your interpretation accordingly.
+
+#### Linear functions and unit-unit changes\
+
+\bigskip
+
+If we assume a linear functional form, the model is: 
+$$
+y=\beta_0+\beta_1x.
+$$ 
+
+**Interpretation**: First take the derivative of the expression to get: $\frac{dy}{dx}=\beta_1$. Now we can rewrite as:
+$$
+\frac{\Delta y}{\Delta x}=\frac{dy}{dx}=\beta_1.
+$$
+Rearranging we see that 
+$$
+\Delta y= \beta_1 \Delta x.
+$$
+Suppose $\Delta x=1$, so that $x$ changes by 1 **unit**. Plugging into the above expression we see that $y$ will change by $\beta_1$ **units**.
+
+
+#### Logarithmic functions and percent-unit changes\
+
+
+If we assume a logarithmic functional form, the model is: 
+$$
+y=\beta_0+\beta_1 log(x).
+$$
+
+**Interpretation:** First take the derivative of our model. Recall: if $w=log(v)$ then $\frac{dw}{dv}=\frac{1}{v}$. Thus for our model: $\frac{dy}{dx}=\frac{\beta_1}{x}$ which, for small changes in $x$ can be approximately rewritten as:
+
+$$
+\frac{\Delta y}{\Delta x}\approx \frac{dy}{dx}=\frac{\beta_1}{x}.
+$$
+Rearranging we see that 
+$$
+\Delta y= \beta_1 \frac{ \Delta x}{x}.
+$$
+Suppose we know that $x$ changes by 10 percent, so that the proportional change in $x$ is 0.1 $\Rightarrow \frac{\Delta x}{x}=0.1$. Plugging into the expression above we see that $y$ will change by $\beta_1*0.1$ **units**. 
+
+#### Exponential functions and Unit-Percent changes\
+
+
+If we assume an exponential functional form, the model is: $y=e^{\beta_0+\beta_1x}$ or 
+$$
+log(y)=\beta_0+\beta_1x.
+$$ 
+
+**Interpretation:** Once again, we take a derivative of our model with respect to $x$ and find $\frac{dlog(y)}{dx}=\beta_1$. For small changes we can rewrite this as 
+
+$$
+\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1.
+$$
+Using the fact that $\Delta log(y)=\frac{\Delta y}{y}$:
+$$
+\frac{\frac{\Delta y}{y}}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1,
+$$
+we can rearrange and see that 
+$$
+\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \underbrace{\frac{\Delta y}{y}\times100}_{\text{percent change}}=(\beta_1 \Delta x)\times100
+$$
+
+Suppose $x$ changes by 1  **unit**. Plugging this into the expression derived above, we see that the proportional change in $y$ is $\beta_1$ and the percent change in $y$ is $100\times\beta_1$ percent. 
+
+#### Log-Log functions and Percent-Percent changes (eg elasticities)\ 
+
+
+If we assume a log-log functional form, the model is 
+$$
+log(y)=\beta_0+\beta_1log(x).
+$$
+
+**Interpretation:** As usual, start by taking the derivative of our model, $\frac{dlog(y)}{dx}=\beta_1\frac{1}{x}$. Re-writing it in terms of small changes we get:
+
+$$
+\begin{aligned}
+\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}&=\beta_1(\frac{1}{x})\\
+\Rightarrow \Delta log(y)&=\beta_1 (\frac{\Delta x}{x})\\
+\Rightarrow \frac{\Delta y}{y}&=\beta_1  (\frac{\Delta x}{x})\\
+\Rightarrow \frac{\Delta y}{y}\times100&=\beta_1  (\frac{\Delta x}{x})\times 100
+\end{aligned}
+$$
+Suppose we know that $x$ changes by 1 **percent**. Plug the value into this expression and we see that $y$ will change by $\beta_1$ **percent**. 
+
+
+#### Summary:\
+
+
+|Model      |DepVar| IndepVar |How does $\Delta y$ relate to $\Delta x$? |Interpretation       |
+|-----------|------|----------|------------------------------------|---------------------|
+|Linear     | y    |x         |$\Delta y=\beta_1\Delta x$                | $\Delta y=\beta_1 \Delta x$ |
+|Logarithmic| y |log(x) |$\Delta y=\beta_1\frac{\Delta x}{x}$| $\Delta y=\beta_1 \frac{\% \Delta x}{100}$ |
+|Exponential| log(y) |x |$\frac{\Delta y}{y}=\beta_1\Delta x$| $\% \Delta y=\beta_1 \Delta x \times 100$ |
+|Log-log    | log(y) |log(x)|$\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}$| $\% \Delta y=\beta_1 \%\Delta x$ |
+
+
+#### Practice:\
+
+**Example 1:** You have data on gas consumption and prices, you estimate the following model
+
+$$
+log(gas)=12-0.21price
+$$
+**How does gas consumption change when price increases by 1 dollar?**
+$$
+\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \frac{\Delta y}{y}=(-0.21)\times 1= -0.21\Rightarrow \%\Delta y=-21\%
+$$
+
+**Example 2:**
+You have data on corn and beef prices, you estimate the following model
+
+$$
+log(P_{beef})=0.83+0.491log(P_{corn})
+$$
+**How does $P_{beef}$ change is $P_{corn}$ rises by 2\%?**
+
+$$
+\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}=0.49\times0.02= 0.00982\Rightarrow +0.982\%
+$$
+
+**Example 3:** You have data on CEO salaries (in hundred thousand dollars) and annual firm sales (millions of dollars). You estimate:
+
+$$
+salary=2.23+1.1log(sales)
+$$
+**How does salary change if annual sales increase by 10\%?**
+$$
+\Delta y=\beta_1\frac{\Delta x}{x}=1.1\times0.1=0.11
+$$
+If sales increase by 10\%, CEO salaries are predicted to increase by 0.11 (hundred thousand)= 11,000 dollars.
+
+### Quadratics
+
+When interpreting a variable that includes a quadratic (or higher order) polynomial, it is important to recognize that the marginal effect of the variable is not linear, and include this in your interpretation.
+
+Suppose we are interested in the relationship between age and sleep. You estimate the following model using the `sleep75` data from the `wooldridge` package:
+
+$$
+sleep=\beta_0+\beta_1 age+\beta_2 age^2+u
+$$
+This model allows for the marginal effect of age on sleep to change, along a quadratic functional form. To see this, take the derivative of sleep with respect to age:
+
+$$
+\frac{dsleep}{dage}=\beta_1+2*\beta_2*age.
+$$
+We see that the predicted effect of age on sleep will depend on an observation's age.  When interpreting, the marginal effect in this case, it is often informative to specify the age at which you are interpreting at, and give a sense of the marginal effects at different key points of the age distribution. 
+
+Retrieving the coefficients, we get:
+
+```{r quad, echo=TRUE}
+sleep75$age2<-sleep75$age*sleep75$age
+regquad<-lm(sleep~age+age2, sleep75)
+
+summary(regquad)
+```
+
+thus 
+$$
+\frac{dsleep}{dage}=-21.5+0.6*age.
+$$
+If you are currently 22 years old, our model predicts that a year from now you will be getting 8.3 fewer minutes per week of sleep than you are currently getting.
+
+If you are currently 60, our model predicts that a year from now you will be getting 14.5 more minutes per week of sleep than you are currently getting.
+
+In fact, age is predicted to decrease sleep until a person is 35.8 years old at which point an additional year is associated with an increase in sleep (where $\frac{dsleep}{dage}=0$).
+
+It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. 
+
+
+
+
+### Interactions with continuous variables
+
+
+When interpreting interactions with continuous variables, it is important to recognize that the marginal effect of the variable are not linear, and, (as with interpretations of quadratics) include this in your interpretation.
+
+
+Suppose we are interested in the relationship between age, education and sleep. You estimate the following model using the `sleep75` data from the `wooldridge` package:
+
+$$
+sleep=\beta_0+\beta_1 age+\beta_2 educ+\beta_3 age \times educ+u
+$$
+This model allows for the marginal effect of age and education on sleep to be a function of one another. To see this, take the derivative of sleep with respect to age:
+
+$$
+\frac{dsleep}{dage}=\beta_1+\beta_3*educ.
+$$
+How age predicts sleeps depends on an observation's education level. 
+
+Similarly, take the derivative of sleep with respect to education:
+
+$$
+\frac{dsleep}{deduc}=\beta_2+\beta_3*age.
+$$
+
+How education predicts sleeps depends on an observation's age. 
+
+
+Retrieving the coefficients, we get:
+```{r inter, echo=TRUE}
+reginter<-lm(sleep~age+educ+age*educ, sleep75)
+
+summary(reginter)
+```
+
+thus
+$$
+\frac{dsleep}{dage}=12.26-1.466*educ
+$$
+and
+$$
+\frac{dsleep}{deduc}=49.97-1.466*age.
+$$
+
+If you are interested in predicting the effect of an additional year of education on sleep, you will need to specify the age of the observation in question: we get a prediction of 17.7 minutes per week more sleep if you are 22 years old but 38 minutes per week less sleep if you are 60.
+
+In fact, more education is associated with more sleep until 34 years of age (where $\frac{dsleep}{deduc}=0$), at which point it becomes associated with less sleep.
+
+It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. Graphing them is also an option. 
+
+
+## Binary Dependent variables
+
+Most of the models we have seen have had continuous dependent variables: the $y$ variable was some quantitative amount that took on a range of possible values (a test score, a weight,...). Sometimes though $y$ can be a dummy variable, taking on either the value 1 or 0. What changes when we have a binary variable on the left hand side?
+
+### Linear Probability Models
+
+A linear probability model is simply a linear regression with a binary variable as the dependent variable $y$:
+
+$$
+y=\beta_0+\beta_1x_1+...+\beta_kx_k+u
+$$
+
+
+- It no longer makes sense to interpret $\beta_j$ as the unit change in $y$ given a one-unit increase in $x_j$ holding all other factors fixed. Indeed, $y$ either changes from $0\rightarrow 1$, from $1 \rightarrow 0$ or doesn't change. 
+
+- The $\beta_j$'s still have a useful interpretation though: each $\beta_j$ measures the change in the probability of success when $x_j$ changes by one unit holding all other factors constant.
+
+$$
+Pr(y=1|x)=\beta_0+\beta_1x_1+...+\beta_kx_k
+$$
+
+#### Example:\
+
+Let $inlf$ ("in the labor force") be a binary variable indicating labor force participation by a married woman in 1975. $inlf=1$ if the woman reports working for a wage outside the home at some point during the year, and zero otherwise. Our independent variables might include:
+
+- husbands earnings ($nwifeinc$, measured in thousands of dollars)
+
+- years of education ($educ$)
+
+- past years of labor market experience ($exper$)
+
+- age ($age$)
+
+- number of children less than six years old ($kidslt6$) 
+
+- number of kids between 6 and 18 years of age ($kidsge6$)
+
+We estimate the following model using the `mroz` data that is part of the `wooldridge` package:
+
+$$
+inlf=\beta_0+\beta_1 nwifeinc+\beta_2educ+\beta_3 exper+\beta_4exper^2+\beta_5age+\beta_6kidslt6+\beta_7kidsge6+u
+$$
+
+
+```{r linprob, echo=TRUE}
+mroz$exper2<-mroz$exper^2
+reg1<-lm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz)
+summary(reg1)
+
+```
+
+As an example, given that this is a linear probability model, we would interpret the coefficient on $educ$ as: holding all else fixed, an additional year of education increases predicted probability of labor force participation by 0.038, or 3.8 percentage points. 
+
+The graph below depicts the probability of labor force participation and $educ$. The other independent variables, for the purposes of this example, are fixed at the values $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$.
+
+![]("images\Picture1.png")
+
+For a woman with these characteristics, the relationship between years of education and the probability of being in the labor force is given by:
+
+$$
+\begin{aligned}
+Pr(inlf=1|educ)&=(0.585+(-0.003)*50+(0.039)*5+(-0.001)*5^2+(-0.016)*30+(-0.262)*1)+0.038*educ\\
+&=-0.146+0.038educ
+\end{aligned}
+$$
+
+#### Linear Probability Model Drawbacks: 
+
+1) Because this is a linear regression, we are trying to fit a line to the data. This means that we can get predicted probabilities that are negative or greater than one. We can see here that the predicted probability of labor force participation for women with education that is below 3.84 years is negative. Similarly, if a woman has 31 years of education it would be greater than one. This isn't too much of a concern here because in the sample few women will fall in those ranges. Nevertheless, the predicted probabilities from our regression aren't bound between 0 and 1.
+
+2) A related problem: a linear probability model implies that the outcome is linearly related to the independent variables. This is not possible with probabilities. In the previous example, an additional child reduces the probability of working by 0.262. Thus our model implies that going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible.
+
+3) This model uses the idea that the probability that the dummy is equal to one is actually a function of our $x$'s, which means the variance of the dummy is a function of our $x$'s. Indeed, when $y$ is a binary variable 
+
+$$
+Var(y|x)=p(x)[1-p(x)]
+$$
+where $p(x)$ is a shorthand for the probability of success $p(x)=\beta_0+\beta_1x_1+...+\beta_kx_k$. This means that there must be heteroskedasticity in the linear probability model. Thus you should always use **heteroskedasticity robust standard errors** with linear probability models.
+
+### Logits
+
+How do we address the drawbacks of linear probability models? With **logistic regressions**, which are estimated via maximum likelihood methods rather than OLS. 
+
+Logits differ from the linear probability model in what kind of function is used for the estimated probability. 
+
+In linear probability models, we have
+
+$$
+Pr(y=1|x_1, x_2)=\beta_0+\beta_1x_1+\beta_2x_2.
+$$
+With a logit, we have
+$$
+Pr(y=1|x_1, x_2)=\frac{e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}{1+e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}=\Lambda(\beta_0+\beta_1x_1+\beta_2x_2)
+$$
+
+
+
+
+where $\Lambda$ is commonly used notation to represent the complex logit function.
+
+![]("images\lin_v_log.png"){width=75%}
+
+
+Why would we ever pick a functional form for the probability that looks as complicated as $\Lambda$? Because it is bounded between 0 and 1 (so our predictions make sense), and it has nice statistical properties (which we will not get into). 
+
+One important thing to note about the estimation of logit models is that `R` output will not give you the marginal effect of one more unit of $x_j$ on the probability of $y$ taking the value 1 ( $\frac{\partial Pr(y=1|x)}{\partial x_j}$). Instead it reports the **log-odds** by default, which are not the same as marginal effects!
+
+To get marginal effects, we need to do a couple more steps. This is because these models are **non-linear**, such that the exact marginal effect of $x_j$ on $y$ **changes depending on the other values of x**. Therefore we have a bunch of options for where we calculate the marginal effects at. In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. In `R` we can also specify any values of our independent variables to evaluate our marginal effects precisely at those values. Note that this is in contrast to the constant marginal effect of $x_j$ on $Pr(y=1|x)$ found in the linear probability model, and is another potential benefit of running a logit model. 
+
+#### Example:\
+
+I return to the previous example, looking at labor force participation using the `mroz` data. 
+
+In `R` we can estimate a logistic regression with the `glm()` function. Running `summary()` will then get us the log-odds.
+
+
+```{r logit, echo=TRUE}
+reglogit1<-glm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz, family="binomial")
+summary(reglogit1)
+
+
+```
+
+To get the marginal effects, we need to run the estimated `glm()` object through the `margins()` function from the **margins** package. 
+```{r logit2, echo=TRUE}
+library(margins)
+marg_reglogit1<-margins(reglogit1)
+
+summary(marg_reglogit1)
+
+```
+
+Recall that by default this computes the average marginal effect for the sample. To instead compute the marginal effect for a particular type of observation
+
+```{r logit3, echo=TRUE}
+
+DF <- data.frame(age=30, 
+                 nwifeinc=50,
+                 exper=5,
+                 exper2=25,
+                 kidsge6=0,
+                 kidslt6=1,
+                 educ=12,
+                 stringsAsFactors=FALSE)
+              
+marg_specific <- margins(reglogit1, data = DF)
+
+summary(marg_specific)
+```
+
+### Example contrasting a logit to a linear probability model (LPM)
+
+
+In sports betting, the Las Vegas point spread is the predicted scoring differential between two opponents as quoted by a sports book in Las Vegas. We are interested in the probability that the favored team actually wins. 
+
+We can run the following regression: 
+
+$$
+\widehat{favwin}_i=\hat{\beta}_0+\hat{\beta}_1spread_i+\hat{\beta}_2favhome_i+\hat{\beta}_3fav25_i+\hat{\beta}_4und25_i+\hat{u}_i
+$$
+Where $favwin$ is a dummy variable indicating whether the favored team won, $spread$ is the Las Vegas point spread, $favhome$ is a dummy variable indicating whether the favored team is playing at home, $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
+
+I use the `pntsprd` data from the wooldridge package to first estimate the linear probability model: 
+
+```{r logitvlpm, echo=TRUE}
+
+lpm<-felm(favwin~spread+favhome+fav25+und25, data=pntsprd)
+
+summary(lpm, robust=TRUE)
+```
+
+
+Let's compare the LPM model results to those for the equivalent logit:
+
+```{r logitvlpm2, echo=TRUE}
+
+logit<-glm(favwin~spread+favhome+fav25+und25, data=pntsprd, family="binomial")
+marg_logit<-margins(logit)
+summary(marg_logit)
+
+```
+
+You can see that all else constant, a 1 point increase in the Vegas point spread is estimated to increase the predicted probability of winning by 1.78 percentage points using the linear probability model and 2.43 percentage points on average using the logit model. It is generally the case that results using these two different methods will often be quite similar.
+
+To really see the difference between them, we can plot the predicted probabilities (obtained with `$fitted.values` on the `lm()` or `glm()` objects).
+
+
+```{r logitvlpm3, echo=TRUE}
+
+df<- mutate(pntsprd, lpm_prob=lpm$fitted.values,
+            logit_prob=logit$fitted.values)
+
+plot<-df%>%
+  ggplot(aes(x=spread))+
+  geom_point(aes(y=lpm_prob, colour="LPM"), alpha=0.6)+
+  geom_point(aes(y=logit_prob, colour="Logit"), alpha=0.6)+
+  geom_hline(yintercept = 1, alpha=0.7)+
+  geom_hline(yintercept = 0,alpha=0.7)+
+  scale_colour_manual("Model",
+                      breaks=c("LPM", "Logit"),
+                      values=c("blue", "forestgreen"))+
+  lims(y=c(0,1.4))+
+  labs(title="Predicted Win Probabilities, LPM",
+       x="Spread",
+       y="Probability")
+plot
+  
+```
+
+
+We can see straightaway that we estimated probabilities greater than one with the linear probability model (in green) for high point spreads, and that the logit probabilities (blue) never exceed one. Additionally, you can see that the effect of one additional point in the spread has a constant effect for linear probability models, while the slope of the logit probabilities changes depending on the level of the point spread. 
+
 ## Non-standard standard errors
 
 A standard error is, of course, an estimate of the uncertainty around an estimated parameter. Formally we have
@@ -86,7 +723,7 @@ $$
 Where are we going to find all these $\sigma_i^2$ for each individual observation?
 
 
-Econometricians Eicker, Huber and White figured out a way to do this by basically using the square of the estimated residual of each observation, $\hat{u}_i^2$, as a stand-in for $\sigma^2_i$. With this trick, a valid estimator for $Var(\hat{beta_1})$, with heteroskedasticity of **any** form (including homoskedasticity), is 
+Econometricians Eicker, Huber and White figured out a way to do this by basically using the square of the estimated residual of each observation, $\hat{u}_i^2$, as a stand-in for $\sigma^2_i$. With this trick, a valid estimator for $Var(\hat{\beta_1})$, with heteroskedasticity of **any** form (including homoskedasticity), is 
 
 $$
 Var(\hat{\beta_1})=\frac{\sum_{i=1}^n(x_i-\bar{x})^2\hat{u}_i^2}{(\sum_{i=1}^n(x_i-\bar{x})^2)^2}
@@ -117,17 +754,17 @@ It is worth noting that robust standard errors are larger than regular standard 
 
 ### Clustered standard errors
 
-Econometricians Haiku
+\vspace{15mm}
+
+**Econometricians Haiku**
 
 
-T-stats looks too good
+T-stats looks too good\
+Try cluster standard errors\
+significance gone.\
 
-Try cluster standard errors
-
-significance gone.
-
-from Angrist and Pischke 2008
-
+_from Angrist and Pischke 2008_
+\vspace{15mm}
 
 Suppose that every observation belongs to (only) one of G groups. The assumption we make when we cluster is that there is no correlation across groups- but we will allow for arbitrary within-group correlation. A great example: consider individuals within a village. In many cases it's pretty reasonable to think that individuals' error terms are correlated within a village, but that individuals' errors aren't correlated across villages. 
 
@@ -193,7 +830,7 @@ summary(reg1)
 
 ```
 
-#### Confidence interval for the average Birthweight
+#### Confidence interval for the average Birthweight\
 
 Recall that our model gives us the expected value:
 
@@ -275,7 +912,7 @@ $$
 [119.64-1.96(1.007), 119.64+1.96(1.007)]=[117.6653,121.6158]
 $$
 
-#### Confidence Interval for a particular individual's birthweight
+#### Confidence Interval for a particular individual's birthweight\
 
 A confidence interval for the average of observations with specific characteristics is not the same as a confidence interval for a particular individual observation. In forming a confidence interval for a particular unit, we must account for another very important source of variation: the variance in the unobserved error, which measures our ignorance of the unobserved factors that affect $y_i$.
 
@@ -382,622 +1019,6 @@ $$
 
 
 
-## Regression Interpretation and Variable Transformations
-
-Being able to generate regression results is one thing. Equally important is being able to interpret them correctly. When interpreting regression results, there are typically 3 elements you want to touch upon (the three S'):
-
-1) **Sign**- is the coefficient you are discussing positive or negative? Does the sign of the coefficient match your priors or is it surprising?
-
-2) **Size**- What is the magnitude of the coefficient? Is the effect of $x$ on $y$ economically meaningful or not? While it is not incorrect to say the that a one unit increase in $x$ leads to a $\beta$ unit change in $y$, in order to be able to make your interpretation informative to your audience, you will generally want to be more precise:
-
-    - specify the units of measurement
-    
-    - interpret the coefficients appropriately: if the regression used a logged variable, a binairy dependent variable, a standardized variable... it may be useful to scale the values into more intuitive units of measurement. If the regression features a polynomial discuss the difference in the magnitude of the marginal effects at different key values. If the regression features interaction terms, interpret the implications for different types of observations
-    
-    - it is often informative to compare the coefficient to the mean and standard deviation of the dependent variable to give your audience a point of reference with which to gauge magnitudes
-    
-  
-
-3) **Significance**- Is the estimate statistically significant? Can we reject that the true coefficient is equal to zero? With what confidence level?
-
-
-
-
-### Scaling
-
-Sometimes you may find that the units of measurement used for some of the variables in the data you are working with are not very intuitive. 
-
-Suppose I am interested in the following regression: 
-
-$$
-sleep=\beta_0+\beta_1totwork+\beta_2educ+u
-$$
-Using the `sleep75` data that is part of the `wooldrige` package, I run the estimation and get the following
-```{r scal, echo=TRUE}
-
-regsleep1<-lm(sleep~totwrk+educ, sleep75)
-
-summary(regsleep1)
-```
-
-What do these coefficients mean? To answer this I need to know the units of measurement for each of the variables. $educ$ is measured in years of education, which is fairly intuitive but $sleep$ and $totwrk$ are measured in minutes per week. Thus, **one additional year of education is associated with 13.5 fewer minutes of sleep per week**. This is probably not the most intuitive interpretation for most audiences. Hours per week would probably be a more natural way to report this.
-
-#### Scaling the dependent variable
-
-One way to do this is to simply make the adjustment in our interpretation. $13.5$ min per week is equivalent to $\frac{13.5}{60}=0.23\approx 1/4$ hour per week. So we could just rewrite all of our interpretations in terms of hours by dividing the old coefficients by 60:
-
-$$
-\frac{\hat{\beta}_0}{60};\frac{\hat{\beta}_1}{60};\frac{\hat{\beta}_2}{60}. 
-$$
-Alternatively, it is often just easier to run the regression after having scaled our $sleep$ variable in terms of hours (i.e. dividing the dependent variable by 60 and re-running the regression) as follows:
-
-```{r scal2, echo=TRUE}
-sleep75$sleephrs<-sleep75$sleep/60
-
-regsleep2<-lm(sleephrs~totwrk+educ, sleep75)
-
-summary(regsleep2)
-```
-
-In general, if we re-scale the dependent variable $y$ by a constant $c$, then the equation we estimate becomes
-
-$$
-\begin{aligned}
-\tilde{y}&=\tilde{\beta}_0+\tilde{\beta}_1x_1+...+\tilde{\beta}_kx_k+u\\
-cy&=c\beta_0+c\beta_1x_1+c\beta_2x2+...+c\beta_kx_k+u.
-\end{aligned}
-$$
-In the example above, $c=\frac{1}{60}$, so the new $\hat{\beta}$'s will be divided by 60 too. Nothing else about the regression changes ($R^2$, t-stats, p-values). 
-
-
-#### Scaling the independent variable
-
-Things are slightly different is we are scaling an independent variable. Our estimates above say that a 1 minute increase in total work  per week predicts a decrease in sleep of 0.0025 hours per week. This is clearly equivalent to saying that a one hour increase in total work predicts a 60*(0.0025)=0.15 hour decrease in sleep per week (i.e. we can multiply our $\hat{\beta}$ estimate by 60). 
-
-As above, it often makes sense to scale the variable in R prior to running the regression:
-```{r scal3, echo=TRUE}
-sleep75$totwrkhrs<-sleep75$totwrk/60
-
-regsleep3<-lm(sleephrs~totwrkhrs+educ, sleep75)
-
-summary(regsleep3)
-```
-
-When scaling an independent variable, the other coefficients will be unchanged, but the coefficient on the scaled variable will adjust accordingly.
-
-In general, if we scale $x$ by $c$, the equation becomes:
-
-$$
-\begin{aligned}
-y&= \beta_0+\tilde{\beta}_1\tilde{x}_1+...+\beta_kx_k+u\\
-&= \beta_0+\frac{\tilde{\beta}_1}{c}(c\tilde{x}_1)+...+\beta_kx_k+u.
-\end{aligned}
-$$
-
-### Standardizing
-
-Standardizing variables eliminates the units in order to be able to compare the magnitude of estimates across independent variables. This can make interpretation easier if you have variables with weird arbitrary units that are unfamiliar to people.  We can solve this issue by standardizing the variables.
-
-Suppose we have a regression with two variables, $x_1$ and $x_2$:
-
-$$
-y=\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2
-x_2+\hat{u}
-$$
-
-We know that our regression must go through the point of averages, or think if we average the previous equation, and use the fact that the $\hat{u}_i$'s have a zero sample average, or if we plugged in $\bar{x}_1$ and $\bar{x}_2$, we would predict $\bar{y}$:
-
-$$
-\bar{y}=\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2
-$$
-
-
-We can subtract the second equation from the first to get:
-
-$$
-\begin{aligned}
-\hat{y}-\bar{y}&=(\hat{\beta}_0+\hat{\beta}_1 x_1 +\hat{\beta}_2
-x_2+\hat{u})-(\hat{\beta}_0+\hat{\beta}_1\bar{x}_1 +\hat{\beta}_2\bar{x}_2)\\
-&=\hat{\beta}_1( x_1-\bar{x}_1) +\hat{\beta}_2(
-x_2-\bar{x}_2)+\hat{u}
-\end{aligned}
-$$
-With a little bit of additional algebra, dividing both sides of this equation by the standard deviation of $y$, $\sigma_y$ and multiplying each independent variable by $1=\frac{\sigma_x}{\sigma_x}$. we can get the entire regression into standard units: 
-
-$$
-(\frac{y-\bar{y}}{\hat{\sigma}_y})=\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1(\frac{x_1-\bar{x}_1}{\hat{\sigma}_{x_1}})+\frac{\hat{\sigma}_{x_2}}{\hat{\sigma}_y}\hat{\beta}_2(\frac{x_2-\bar{x}_2}{\hat{\sigma}_{x_2}})+\frac{\hat{u}}{\hat{\sigma}_y}
-$$
-Now we can say that controlling for $x_2$ a one standard deviation increase in $x_1$ leads to a $\frac{\hat{\sigma}_{x_1}}{\hat{\sigma}_y}\hat{\beta}_1$ standard deviation increase in the predicted $y$. We call this new term the standardized coefficient or "beta" coefficient. In R, we can get these coefficients by using the `lm.beta` command following a regression using `lm`.  
-
-We use the bwght2 dataset to look at how parent ages correlate with birth weights. (Note: birth weights here will be measured in grams). I estimate four different regressions of the type 
-
-
-$$
-birthweight_i=\beta_0+\beta_1 motherage_i+\beta_2 fatherage_i+\epsilon_i
-$$
-
-scaling either the dependent and/or independent variables.
-
-
-```{r scaling, echo=TRUE, results="asis"}
-
-bwght<-bwght2
-
-reg1<-lm(bwght~mage+fage, bwght)
-reg2<-lm(scale(bwght)~scale(mage)+scale(fage), bwght)
-reg3<-lm(scale(bwght)~mage+fage, bwght)
-reg4<-lm(bwght~scale(mage)+scale(fage), bwght)
-
-meandep1<-round(mean(bwght$bwght),2)
-meandep2<-round(mean(scale(bwght$bwght)),2)
-sddep1<-round(sd(bwght$bwght),2)
-sddep2<-round(sd(scale(bwght$bwght)),2)
-
-stargazer(reg1,reg2, reg3, reg4, type = "latex" , header=FALSE,
-          add.lines=list(c("Mean",meandep1,meandep2, meandep2, meandep1 ),
-                         c("SD",sddep1,sddep2, sddep2, sddep1 )))
-
-
-```
-
-Interpreting column 1:
-
-- Having a mother that is **a year** older at birth predicts a birthweight that is 3.992 **grams** less (not statistically significant).
-
-- Having a father that is **a year** older at birth predicts a birthweight that is 9.313 **grams** more (highly statistically significant).
-
-Interpreting column 2:
-
-- Having a mother whose age is **one standard deviation higher** at birth predicts a birthweight that is 0.033 **standard deviations** lower (not statistically significant).
-
-- Having a father whose age is **one standard deviation higher** at birth predicts a birthweight that is 0.092 **standard deviations** higher (highly statistically significant).
-
-Interpreting column 3:
-
-- Having a mother that is **a year** older at birth predicts a birthweight that is 0.007 **standard deviations** lower (not statistically significant).
-
-- Having a father that is **a year** older at birth predict a birthweight that is 0.016 **standard deviations** higher (highly statistically significant).
-
-Interpreting column 4:
-
-- Having a mother whose age is **one standard deviation higher** at birth predicts a birthweight that is 19.044 **grams** lower (not statistically significant).
-
-- Having a father whose age is **one standard deviation higher** at birth predicts a birthweight that is 53.205 **grams** higher (highly statistically significant).
-
-
-
-Notes:
-
-- You can also standardize $y$, $x_1$ and $x_2$ directly in the data set and then run your regression on the standardized variables though this involves more coding.
-
-- You do not need to standardize all the variables. You could just standardize $x_1$ and adjust your interpretation accordingly ( you will need an intercept in this case).
-
-
-### Logs
-
-Choosing an appropriate functional form is a critical choice in economic modeling. Using log's to transform a variable can greatly improve the fit of your model by making the underlying relationship between the dependent and independent variables linear. Of course, when you do this, you need to then adjust your interpretation accordingly.
-
-#### Linear functions and unit-unit changes
-
-\bigskip
-
-If we assume a linear functional form, the model is: $y=\beta_0+\beta_1x$. 
-
-**Interpretation**: First take the derivative of the expression to get: $\frac{dy}{dx}=\beta_1$. Now we can rewrite as:
-$$
-\frac{\Delta y}{\Delta x}=\frac{dy}{dx}=\beta_1.
-$$
-Rearranging we see that 
-$$
-\Delta y= \beta_1 \Delta x.
-$$
-Suppose $\Delta x=1$, so that $x$ changes by 1 **unit**. Plugging into the above expression we see that $y$ will change by $\beta_1$ **units**.
-
-
-#### Logarithmic functions and percent-unit changes
-
-\bigskip
-
-If we assume a logarithmic functional form, the model is: $y=\beta_0+\beta_1 log(x)$.
-
-**Interpretation:** First take the derivative of our model. Recall: if $w=log(v)$ then $\frac{dw}{dv}=\frac{1}{v}$. Thus for our model: $\frac{dy}{dx}=\frac{\beta_1}{x}$ which, for small changes in $x$ can be approximately rewritten as:
-
-$$
-\frac{\Delta y}{\Delta x}\approx \frac{dy}{dx}=\frac{\beta_1}{x}.
-$$
-Rearranging we see that 
-$$
-\Delta y= \beta_1 \frac{ \Delta x}{x}.
-$$
-Suppose we know that $x$ changes by 10 percent, so that the proportional change in $x$ is 0.1 $\Rightarrow \frac{\Delta x}{x}=0.1$. Plugging into the expression above we see that $y$ will change by $\beta_1*0.1$ **units**. 
-
-#### Exponential functions and Unit-Percent changes\
-
-
-If we assume an exponential functional form, the model is: $y=e^{\beta_0+\beta_1x}$ or $log(y)=\beta_0+\beta_1x$. 
-
-**Interpretation:** Once again, we take a derivative of our model with respect to $x$ and find $\frac{dlog(y)}{dx}=\beta_1$. For small changes we can rewrite this as 
-
-$$
-\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1.
-$$
-Using the fact that $\Delta log(y)=\frac{\Delta y}{y}$:
-$$
-\frac{\frac{\Delta y}{y}}{\Delta x}\approx \frac{dlog(y)}{dx}=\beta_1,
-$$
-we can rearrange and see that 
-$$
-\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \underbrace{\frac{\Delta y}{y}\times100}_{\text{percent change}}=(\beta_1 \Delta x)\times100
-$$
-
-Suppose $x$ changes by 1  **unit**. Plugging this into the expression derived above, we see that the proportional change in $y$ is $\beta_1$ and the percent change in $y$ is $100\times\beta_1$ percent. 
-
-#### Log-Log functions and Percent-Percent changes (eg elasticities)\ 
-
-
-If we assume a log-log functional form, the model is $log(y)=\beta_0+\beta_1log(x)$.
-
-**Interpretation:** As usual, start by taking the derivative of our model, $\frac{dlog(y)}{dx}=\beta_1\frac{1}{x}$. Re-writing it in terms of small changes we get:
-
-$$
-\begin{aligned}
-\frac{\Delta log(y)}{\Delta x}\approx \frac{dlog(y)}{dx}&=\beta_1(\frac{1}{x})\\
-\Rightarrow \Delta log(y)&=\beta_1 (\frac{\Delta x}{x})\\
-\Rightarrow \frac{\Delta y}{y}&=\beta_1  (\frac{\Delta x}{x})\\
-\Rightarrow \frac{\Delta y}{y}\times100&=\beta_1  (\frac{\Delta x}{x})\times 100
-\end{aligned}
-$$
-Suppose we know that $x$ changes by 1 **percent**. Plug the value into this expression and we see that $y$ will change by $\beta_1$ **percent**. 
-
-
-#### Summary:\
-
-
-|Model      |DepVar| IndepVar |How does $\Delta y$ relate to $\Delta x$? |Interpretation       |
-|-----------|------|----------|------------------------------------|---------------------|
-|Linear     | y    |x         |$\Delta y=\beta_1\Delta x$                | $\Delta y=\beta_1 \Delta x$ |
-|Logarithmic| y |log(x) |$\Delta y=\beta_1\frac{\Delta x}{x}$| $\Delta y=\beta_1 \frac{\% \Delta x}{100}$ |
-|Exponential| log(y) |x |$\frac{\Delta y}{y}=\beta_1\Delta x$| $\% \Delta y=\beta_1 \Delta x \times 100$ |
-|Log-log    | log(y) |log(x)|$\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}$| $\% \Delta y=\beta_1 \%\Delta x$ |
-
-
-#### Practice:\
-
-**Example 1:** You have data on gas consumption and prices, you estimate the following model
-
-$$
-log(gas)=12-0.21price
-$$
-**How does gas consumption change when price increases by 1 dollar?**
-$$
-\frac{\Delta y}{y}=\beta_1\Delta x \Rightarrow \frac{\Delta y}{y}=(-0.21)\times 1= -0.21\Rightarrow \%\Delta y=-21\%
-$$
-
-**Example 2:**
-You have data on corn and beef prices, you estimate the following model
-
-$$
-log(P_{beef})=0.83+0.491log(P_{corn})
-$$
-**How does $P_{beef}$ change is $P_{corn}$ rises by 2\%?**
-
-$$
-\frac{\Delta y}{y}=\beta_1\frac{\Delta x}{x}=0.49\times0.02= 0.00982\Rightarrow +0.982\%
-$$
-
-**Example 3:** You have data on CEO salaries (in hundred thousand dollars) and annual firm sales (millions of dollars). You estimate:
-
-$$
-salary=2.23+1.1log(sales)
-$$
-**How does salary change if annual sales increase by 10\%?**
-$$
-\Delta y=\beta_1\frac{\Delta x}{x}=1.1\times0.1=0.11
-$$
-If sales increase by 10\%, CEO salaries are predicted to increase by 0.11 (hundred thousand)= 11,000 dollars.
-
-### Quadratics
-
-When interpreting a variable that includes a quadratic (or higher order) polynomial, it is important to recognize that the marginal effect of the variable are not linear, and include this in your interpretations.
-
-Suppose we are interested in the relationship between age and sleep. You estimate the following model using the `sleep75` data from the `wooldridge` package:
-
-$$
-sleep=\beta_0+\beta_1 age+\beta_2 age^2+u
-$$
-This model allows for the marginal effect of age on sleep to change, along a quadratic functional form. To see this, take the derivative of sleep with respect to age:
-
-$$
-\frac{dsleep}{dage}=\beta_1+2*\beta_2*age.
-$$
-We see that the predicted effect of age on sleep will depend on an observations age.  When interpreting, the marginal effect in this case, it is often informative to specify the age at which you are interpreting at, and give a sense of the marginal effects at different key points of the age distribution. 
-
-Retrieving the coefficients, we get:
-
-```{r quad, echo=TRUE}
-sleep75$age2<-sleep75$age*sleep75$age
-regquad<-lm(sleep~age+age2, sleep75)
-
-summary(regquad)
-```
-
-thus 
-$$
-\frac{dsleep}{dage}=-21.5+0.6*age.
-$$
-If you are currently 22 years old, our model predicts that a year from now you will be getting 8.3 fewer minuets per week of sleep than you are currently getting.
-
-If you are currently 60, our model predicts that a year from now you will be getting 14.5 more minuets per week of sleep than you are currently getting.
-
-In fact, age is predicted to decrease sleep until a person is 35.8 years old at which point an additional year is associated with an increase in sleep (where $\frac{dsleep}{dage}=0$).
-
-It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. 
-
-
-
-
-### Interactions with continuous variables
-
-
-When interpreting interactions with continuous variables, it is important to recognize that the marginal effect of the variable are not linear, and, (as with interpretations of quadratics) include this in your interpretations.
-
-
-Suppose we are interested in the relationship between age, education and sleep. You estimate the following model using the `sleep75` data from the `wooldridge` package:
-
-$$
-sleep=\beta_0+\beta_1 age+\beta_2 educ+\beta_3 age \times educ+u
-$$
-This model allows for the marginal effect of age and education on sleep to be a function of one another. To see this, take the derivative of sleep with respect to age:
-
-$$
-\frac{dsleep}{dage}=\beta_1+\beta_3*educ.
-$$
-How age predicts sleeps depends on an observation's education level. 
-
-Similarly, take the derivative of sleep with respect to education:
-
-$$
-\frac{dsleep}{deduc}=\beta_2+\beta_3*age.
-$$
-
-How education predicts sleeps depends on an observation's age. 
-
-
-Retrieving the coefficients, we get:
-```{r inter, echo=TRUE}
-reginter<-lm(sleep~age+educ+age*educ, sleep75)
-
-summary(reginter)
-```
-
-thus
-$$
-\frac{dsleep}{dage}=12.26-1.466*educ
-$$
-and
-$$
-\frac{dsleep}{deduc}=49.97-1.466*age.
-$$
-
-If you are interested in predicting the effect of an additional year of education on sleep, you will need to specify the age of the observation in question: we get a prediction of 17.7 minutes per week more sleep if you are 22 years old but 38 minutes per week less sleep if you are 60.
-
-In fact, more education is associated with more sleep until 34 years of age (where $\frac{dsleep}{deduc}=0$), at which point it becomes associated with less sleep.
-
-It is common to interpret non-constant marginal effects at the mean or median value of the explanatory variable, or at any value that would be of particular interest to your audience. Graphing them is also an option. 
-
-
-## Binary Dependent variables
-
-Most of the models we have seen have had continuous dependent variables: the $y$ variable was some quantitative amount that took on a range of possible values (a test score, a weight,...). Sometimes though $y$ can be a dummy variable, taking on either the value 1 or 0. What changes when we have a binary variable on the left hand side?
-
-### Linear Probability Models
-
-A linear probability model is simply a linear regression with a binary variable as the dependent variable $y$:
-
-$$
-y=\beta_0+\beta_1x_1+...+\beta_kx_k+u
-$$
-
-
-- It no longer makes sense to interpret $\beta_j$ as the unit change in $y$ given a one-unit increase in $x_j$ holding all other factors fixed. Indeed, $y$ either changes from $0\rightarrow 1$, from $1 \rightarrow 0$ or doesn't change. 
-
-- The $\beta_j$'s still have a useful interpretation though: each $\beta_j$ measures the change in the probability of success when $x_j$ changes by one unit holding all other factors constant.
-
-$$
-Pr(y=1|x)=\beta_0+\beta_1x_1+...+\beta_kx_k
-$$
-
-#### Example:
-
-Let $inlf$ ("in the labor force") be a binary variable indicating labor force participation by a married woman in 1975. $inlf=1$ if the woman reports working for a wage outside the home at some point during the year, and zero otherwise. Our independent variables might include:
-
-- husbands earnings ($nwifeinc$, measured in thousands of dollars)
-
-- years of education ($educ$)
-
-- past years of labor market experience ($exper$)
-
-- age ($age$)
-
-- number of children less than six years old ($kidslt6$) 
-
-- number of kids between 6 and 18 years of age ($kidsge6$)
-
-We estimate the following model using the `mroz` data that is part of the `wooldridge` package:
-
-$$
-inlf=\beta_0+\beta_1 nwifeinc+\beta_2educ+\beta_3 exper+\beta_4exper^2+\beta_5age+\beta_6kidslt6+\beta_7kidsge6+u
-$$
-
-
-```{r linprob, echo=TRUE}
-mroz$exper2<-mroz$exper^2
-reg1<-lm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz)
-summary(reg1)
-
-```
-
-As an example, given that this is a linear probability model, we would interpret the coefficient on $educ$ as: holding all else fixed, an additional year of education increases predicted probability of labor force participation by 0.038, or 3.8 percentage points. 
-
-The graph below depicts the probability of labor force participation and $educ$. The other independent variables, for the purposes of this example, are fixed at the values $nwifeinc=50$, $exper=5$, $age=30$, $kidslt6=1$ and $kidsge6=0$.
-
-![]("images\Picture1.png")
-
-For a woman with these characteristics, the relationship between years of education and the probability of being in the labor force is given by:
-
-$$
-\begin{aligned}
-Pr(inlf=1|educ)&=(0.585+(-0.003)*50+(0.039)*5+(-0.001)*5^2+(-0.016)*30+(-0.262)*1)+0.038*educ\\
-&=-0.146+0.038educ
-\end{aligned}
-$$
-
-#### Linear Probability Model Drawbacks: 
-
-1) Because this is a linear regression, we are trying to fit a line to the data. This means that we can get predicted probabilities that are negative or greater than one. We can see here that the predicted probability of labor force participation for women with education that is below 3.84 years is negative. Similarly, if a woman has 31 years of education it would be greater than one. This isn't too much of a concern here because in the sample few women will fall in those ranges. Nevertheless, the predicted probabilities from our regression aren't bound between 0 and 1.
-
-2) A related problem: a linear probability model implies that the outcome is linearly related to the independent variables. T His is not possible with probabilities. In the previous example, an additional child reduces the probability of working by 0.262. Thus our model implies that going from 0 to 4 young children reduces the probability by 0.262*4=1.048, 104.8 percentage points, which is impossible.
-
-3) This model uses the idea that the probability that the dummy is equal to one is actually a function of our $x$'s, which means the variance of the dummy is a function of our $x$'s. Indeed, when $y$ is a binary variable 
-
-$$
-Var(y|x)=p(x)[1-p(x)]
-$$
-where $p(x)$ is a shorthand for the probability of success $p(x)=\beta_0+\beta_1x_1+...+\beta_kx_k$. This means that there must be heteroskedasticity in the linear probability model. Thus you should always use **heteroskedasticity robust standard errors** with linear probability models.
-
-### Logits
-
-How do we address the drawbacks of linear probability models? With **logistic regressions**, which are estimated via maximum likelihood methods rather than OLS. 
-
-Logits differ from the linear probability model in what kind of function is used for the estimated probability. 
-
-In linear probability models, we have
-
-$$
-Pr(y=1|x_1, x_2)=\beta_0+\beta_1x_1+\beta_2x_2.
-$$
-With a logit, we have
-$$
-Pr(y=1|x_1, x_2)=\frac{e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}{1+e^{(\beta_0+\beta_1x_1+\beta_2x_2)}}=\Lambda(\beta_0+\beta_1x_1+\beta_2x_2)
-$$
-
-
-
-
-where $\Lambda$ is commonly used notation to represent the complex logit function.
-
-![]("images\lin_v_log.png"){width=75%}
-
-
-Why would we ever pick a functional form for the probability that looks as complicated as $\Lambda$? Because it is bounded between 0 and 1 (so our predictions make sense), and it has nice statistical properties (which we will not get into). 
-
-One important thing to note about the estimation of logit models is that `R` output will not give you the marginal effect of one more unit of $x_j$ on the probability of $y$ taking the value 1 ( $\frac{\partial Pr(y=1|x)}{\partial x_j}$). Instead it reports the **log-odds** by default, which are not the same as marginal effects!
-
-To get marginal effects, we need to do a couple more steps. This is because these models are **non-linear**, such that the exact marginal effect of $x_j$ on $y$ **changes depending on the other values of x**. Therefore we have a bunch of options for where we calculate the marginal effects at. In `R`, the default is to compute the **average marginal effect** which is the average of the marginal effect for each observation in the sample. In `R` we can also specify any values of our independent variables to evaluate our marginal effects precisely at those values. Note that this is in contrast to the constant marginal effect of $x_j$ on $Pr(y=1|x)$ found in the linear probability model, and is another potential benefit of running a logit model. 
-
-#### Example:
-
-I return to the previous example, looking at labor force participation using the `mroz` data. 
-
-In `R` we can estimate a logistic regression with the `glm()` function. Running `summary()` will then get us the log-odds.
-
-
-```{r logit, echo=TRUE}
-reglogit1<-glm(inlf~nwifeinc+educ+exper+exper2+age+kidslt6+kidsge6, mroz, family="binomial")
-summary(reglogit1)
-
-
-```
-
-To get the marginal effects, we need to run the estimated `glm()` object through the `margins()` function from the **margins** package. 
-```{r logit2, echo=TRUE}
-library(margins)
-marg_reglogit1<-margins(reglogit1)
-
-summary(marg_reglogit1)
-
-```
-
-Recall that by default this computes the average marginal effect for the sample. To instead compute the marginal effect for a particular type of observation
-
-```{r logit3, echo=TRUE}
-
-DF <- data.frame(age=30, 
-                 nwifeinc=50,
-                 exper=5,
-                 exper2=25,
-                 kidsge6=0,
-                 kidslt6=1,
-                 educ=12,
-                 stringsAsFactors=FALSE)
-              
-marg_specific <- margins(reglogit1, data = DF)
-
-summary(marg_specific)
-```
-
-### Example contrasting a logit to a linear probability model (LPM)
-
-
-In sports betting, the Las Vegas point spread is the predicted scoring differential between two opponents as quoted by a sports book in Las Vegas. We are interested in the probability that the favored team actually wins. 
-
-We can run the following regression: 
-
-$$
-\widehat{favwin}_i=\hat{\beta}_0+\hat{\beta}_1spread_i+\hat{\beta}_2favhome_i+\hat{\beta}_3fav25_i+\hat{\beta}_4und25_i+\hat{u}_i
-$$
-Where $favwin$ is a dummy variable indicating whether the favored team won, $spread$ is the Las Vegas point spread, $favhome$ is a dummy variable indicating whether the favored team is playing at home, $fav25$ and $und25$ indicate whether the favored team and the underdog team are in the top 25 teams respectively. 
-
-I use the `pntsprd` data from the wooldridge package to first estimate the linear probability model: 
-
-```{r logitvlpm, echo=TRUE}
-
-lpm<-felm(favwin~spread+favhome+fav25+und25, data=pntsprd)
-
-summary(lpm, robust=TRUE)
-```
-
-
-Let's compare the LPM model results to those for the equivalent logit:
-
-```{r logitvlpm2, echo=TRUE}
-
-logit<-glm(favwin~spread+favhome+fav25+und25, data=pntsprd, family="binomial")
-marg_logit<-margins(logit)
-summary(marg_logit)
-
-```
-
-You can see that all else constant, a 1 point increase in the Vegas point spread is estimated to increase the predicted probability of winning by 1.78 percentage points using the linear probability model and 2.43 percentage points on average using the logit model. It is generally the case that results using these two different methods will often be quite similar.
-
-To really see the difference between them, we can plot the predicted probabilities (obtained with `$fitted.values` on the `lm()` or `glm()` objects).
-
-
-```{r logitvlpm3, echo=TRUE}
-
-df<- mutate(pntsprd, lpm_prob=lpm$fitted.values,
-            logit_prob=logit$fitted.values)
-
-plot<-df%>%
-  ggplot(aes(x=spread))+
-  geom_point(aes(y=lpm_prob, colour="LPM"), alpha=0.6)+
-  geom_point(aes(y=logit_prob, colour="Logit"), alpha=0.6)+
-  geom_hline(yintercept = 1, alpha=0.7)+
-  geom_hline(yintercept = 0,alpha=0.7)+
-  scale_colour_manual("Model",
-                      breaks=c("LPM", "Logit"),
-                      values=c("blue", "forestgreen"))+
-  lims(y=c(0,1.4))+
-  labs(title="Predicted Win Probabilities, LPM",
-       x="Spread",
-       y="Probability")
-plot
-  
-```
-
-
-We can see straightaway that we estimated probabilities greater than one with the linear probability model (in green) for high point spreads, and that the logit probabilities (blue) never exceed one. Additionally, you can see that the effect of one additional point in the spread has a constant effect for linear probability models, while the slope of the logit probabilities changes depending on the level of the point spread. 
-
 ## Spatial Data in R
 
 Increasingly, applied econometricians are embedding spatial data into our analyses. A whole host of research questions and designs become possible if you are able to take advantage of, and work with, the huge volume of spatial data that is rapidly becoming available. That said, working with spatial data takes a few new tricks. We'll first go through a variety of spatial data types, then show off the long-promised (and dramatically over-used) nighttime lights dataset. Coooooool.
@@ -1024,7 +1045,7 @@ To deal with spatial data, we'll need a bunch of new packages: `GISTools`, `rgda
 
 Note that the order in which you load these packages is important. I've set things up such that they'll work; (consider yourself warned). 
 
-```{r spatial2, echo=TRUE}
+```{r spatial2, echo=TRUE,message=FALSE, warning=FALSE}
 library(raster)
 #library(vctrs)
 #library(tibble)
