@@ -432,6 +432,7 @@ log(gas)=12-0.21price
 $$
 **How does gas consumption change when price increases by 1 dollar?**
 
+$\Rightarrow$ Top Hat
 
 ## Practice:\
 
@@ -454,6 +455,8 @@ $$
 log(P_{beef})=0.83+0.491log(P_{corn})
 $$
 **How does $P_{beef}$ change is $P_{corn}$ rises by 2\%?**
+
+$\Rightarrow$ Top Hat
 
 
 ## Practice:
@@ -479,6 +482,9 @@ $$
 salary=2.23+1.1log(sales)
 $$
 **How does salary change if annual sales increase by 10\%?**
+
+$\Rightarrow$ Top Hat
+
 
 ## Practice:
 
@@ -655,10 +661,11 @@ $$
 
 
 ## Linear Probability Models
-
+\footnotesize
 $$
 inlf=\beta_0+\beta_1 nwifeinc+\beta_2educ+\beta_3 exper+\beta_4exper^2+\beta_5age+\beta_6kidslt6+\beta_7kidsge6+u
 $$
+\normalsize
 
 - $inlf$ ("in the labor force") is a binary variable indicating labor force participation by a married woman in 1975.
 
