@@ -1470,7 +1470,7 @@ With the right tools these can be used to explore all kinds of questions.
 
 ## Spatial Data in R
 
-Spatial data is just data like anything else. A
+Spatial data is just data like anything else.
 
 The main difference is that spatial data usually come in 2 (or even 3) dimensions (usually latitude and longitude). 
 
@@ -1555,13 +1555,11 @@ slotNames(counties)
 ```
 
 \normalsize
-What is all this?
-
 - polygons: the spatial component of our spatial dataset. Each polygon is a long two-variable dataframe with longitudes (x) and latitudes (y) (like a giant connect-the-dots).
 
 - data: a dataframe, where each row is actually associated with one of the polygons in our shapefile.
 
--`bbox` and `plotOrder`: tell the base plotting commands how to display the data.
+- `bbox` and `plotOrder`: tell the base plotting commands how to display the data.
 
 - `proj4string`: tells `R` how to display and project the data.
 
@@ -1759,6 +1757,7 @@ Let's plot different colors by year of well drilling.
 
 3) convert this into a factor. 
 
+\tiny
 ```{r spatial17, echo=TRUE}
 
 wellsDF <- mutate(wellsDF, date = mdy(spud_date), year = year(date)) %>%
@@ -1771,8 +1770,9 @@ wellsDF <- mutate(wellsDF, year = as.factor(year))
 
 This is also a great excuse to bring in a great R packages: `RColorBrewer`. 
 
-You can see all of the available color palettes by typeing `display.brewer.all()` into your consol.
+You can see all of the available color palettes by typeing `display.brewer.all()` into your console.
 
+\tiny
 ```{r spatial18, echo=TRUE}
 
 paMap <- ggplot() +
@@ -1786,6 +1786,7 @@ paMap <- ggplot() +
     labs(color = "Year")
 
 ```
+
 ## Got the blue's?
 
 ```{r spatial18a, echo=TRUE}
