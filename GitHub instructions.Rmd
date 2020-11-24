@@ -80,7 +80,7 @@ If you would like to copy someone's repo onto your own page so that you can free
 
 You should now have a copy of the repo on your account. 
 
-If you would like to rename the re-name the repo:
+If you would like to rename the repo:
 
   1. Open the repo
   2. Go to the settings tab
@@ -405,7 +405,7 @@ To make sure a folder on your computer reflect the most recent changes made in a
 
 
 
-# Group work in a Public Repository (Problem Set 1)
+# Group work in a Public Repository 
 
 For the first problem set you will be working in a public repository. Keep in mind that this means that your repository will be visible on the internet. I recommend that you select a group leader who's repo will be the central repo for the group where you combine your joint work. 
 
@@ -448,7 +448,7 @@ When you are working on your local machine, do make sure to knit the .Rmd file f
 
 
 
-# Group work in a Private Repository (Problem Sets 2+)
+# Group work in a Private Repository 
 
 The group leader is not going to play such a central role when working on a group project in a private repo. This is because all of the team members will be collaborators in this repo and will have similar editing privileges. **This means that any changes any group member makes to the project can be merged into the main file by any team member (not necessarily the group leader who initiated the repo).** Thus the group leaders unique responsibilities are mostly limited to setting up and hosting the private repo you will work in. 
 
