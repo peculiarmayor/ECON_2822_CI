@@ -260,17 +260,88 @@ Example:
 
 ## RD Estimation
 
-RD estimations can be done quite easily in a regression framework.
+RD estimations can be done quite easily in a regression framework. 
 
-Step 1: Selecting a bandwidth, $b$, that will determine the regression sample on either side of the threshold point $c$.
+There are a couple things to keep in mind when it comes to RD estimation strategies: 
 
-- bandwith selection involves thinking about the tradeoff between sample size and group comprability
+- the choice of functional form 
 
-- there is an econometric literature that discusses methods to choose the optimal bandwidth 
+- the choice of bandwidth. 
 
-- in practice this choice is more art than science and many papers make this choice fairly arbitrarily
+## RD Estimation: Functional form
 
-- it is generally good practice to check that results are not sensitive to the choice of bandwidth
+To identify the treatment effect, you need a good model of the underlying relationship between the running variable and the outcome.
+
+## RD Estimation: Functional form
+
+ ![]("images\rdlinear.png"){width=75%}
+
+Easy if the underlying relatonship is linear:  
+
+- a linear regression fits the data well
+
+- the treatment effect is the "jump" between the intercepts at the threshold value. 
+
+## RD Estimation: Functional form
+
+ ![]("images\RDnonlin.png"){width=75%}
+ 
+If not linear, need higher order polynomial terms.
+
+**What if I fit a linear function?**
+
+## RD Estimation: Functional form
+
+ ![]("images\RDnonlinlin.png"){width=75%}
+ 
+If not linear, need higher order polynomial terms.
+
+**What if I fit a linear function?**
+
+If we do not fit the data correctly, the "jump" at the the threshold will not correctly estimate the treatment effect. 
+
+## RD Estimation: Functional form
+
+ ![]("images\RDmistake.png"){width=75%}
+
+
+ There is no discontinuity at the threshold. 
+ 
+ If I force a linear regression to this data I will detect a discontinuity: I find a treatment effect where there is none. 
+
+## RD Estimation: Robustness to functional form
+
+ Good graphs are important: they will alert you to these problems.
+ 
+ Run specifications with higher order polynomials and check that your estimated treatment effect is not sensitive to their inclusion (or exclusion).
+
+## RD Estimation: Choosing the bandwidth
+
+The bandwidth: how close to the threshold an observation's running variable must be to be in the regression sample. 
+
+**What bandwidth, $h$, should you use?** 
+
+There is an econometric literature on this.
+
+In practice this choice is more art than science (ie fairly arbitrary).
+
+## RD Estimation: Choosing the bandwidth
+
+
+The choice is a tradeoff:
+
+- With a large bandwidth, you will have a larger sample which can shrink your standard errors and improve the precision of your results.
+
+- Two main drawbacks to a large bandwidth:
+
+    - With a very large bandwith, it becomes more difficult to argue that observations on either side of the threshold are similar.
+    
+    - Making sure you select the right functional form will be more important if you are working with a wide bandwith. Example: see  figure C. 
+    
+- Good practice: check that results are not sensitive to the choice of bandwidth.
+
+
+
 
 ## RD Estimation
 
