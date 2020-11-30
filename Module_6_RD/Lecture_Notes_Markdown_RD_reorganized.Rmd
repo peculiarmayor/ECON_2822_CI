@@ -123,9 +123,32 @@ To address this issue, you can inspect the density of the running variable as it
 
 \subsection{Estimation}
 
-RD estimations can be done quite easily in a regression framework. The first step typically involves selecting a bandwidth, $h$, that will determine the regression sample on either side of the threshold point $c$.^[While there is an econometric literature that discusses methods to choose the optimal bandwidth if you wish to get technical, in practice this choice is more art than science and many papers make this choice fairly arbitrarily. Whether you go the art or science route, it is generally good practice to check that results are not sensitive to the choice of bandwidth.]
+RD estimations can be done quite easily in a regression framework. There are a couple things to keep in mind when it comes to RD estimation strategies: the choice of functional form and the choice of bandwidth. 
 
-From here, estimation will depend on whether you are in sharp or fuzzy land.
+\subsubsection{Choosing a functional form}
+
+In RD projects, there is an underlying continuous relationship between the running variable and the outcome variable. The treatment effect is isolated by finding a "break" in this continuous realationship at the threshold. In order to correctly isolate the treatment effect, it is important that you have a good model of the underlying relationship between the running variable and the outcome.
+
+When the underlying relatonship between the running variable and the outcome is linear, this can be done quite easily using simple linear regressions. As illustrated in figure A, a linear regression fits the data well and we can identify the treatment effect as the "jump" between the intercepts at the threshold value. 
+
+
+ ![]("images\rdlinear.png")
+ 
+ In figure B, the underlying relationship between the running varible and the outcome is no longer linear. To correctly model it will require the addition of higher order polynomial terms to our estimating equation. If we fit the data correctly, here too we can identify the treatment effect as the "jump" between the intercepts at the threshold value. If we do not fit the data correctly, the "jump" at the the threshold will not correctly estimate the treatment effect. Imagine if instead of fitting a polynomial to this relationship I fit a linear function. Using a linear function would return different intercepts at the threshold and thus a different (incorrect) estimate of the treatment effect. 
+
+ ![]("images\RDnonlin.png")
+ 
+This problem can be particularly concerning in situations such as that represented in figure C. In figure C,  the underlying relationship between the running varible and the outcome is not linear. If I model this underlying relationship correctly, I can see that there is no discontinuity at the threshold. If however I force my model to fit a linear regression to this data I will detect a discontinuity, concluding that there is a treatment effect when if fact there is none. 
+
+ ![]("images\RDmistake.png")
+ 
+ These issues are one of the reasons the graphs are so important in RD projects, as a good graph will alert you to figure C type stuations. Another way to avoid mistakes such as the one illustrated in figure C is to run specifications with higher order polynomials and check that your estimated treatment effect is not sensitive to their inclusion (or exclusion).
+
+\subsubsection{Choosing the bandwidth}
+In addition to thinking about the functional form in an RD project, thought should also be given to the bandwidth, $h$, that you will use. The bandwidth determines how close to the threshold an observation's running variable has to be to be a part of the regression sample. While there is an econometric literature that discusses methods to choose the optimal bandwidth if you wish to get technical, in practice this choice is more art than science and many papers make this choice fairly arbitrarily. The choice of bandwidth basically involves considering a tradeoff. With a large bandwidth, you will have a larger sample which can shrink your standard errors and improve the precision of your results. However there are two main drawbacks to a large bandwidth. First, with a very large bandwith, it becomes more difficult to argue that observations on either side of the threshold are similar, since you are now including observations that fall quit far above and below the threshold in your comparison. Secondly, making sure you select the right functional form will be more important if you are working with a wide bandwith. Consider the plot in figure C. The functional form becomes important if you are working with the $\pm 0.5$ bandwidth. If however you are working with a narrow bandwidth, such as $\pm 0.1$ , there simply isn't much variation in $x$. In this small range of x, a linear specification fits the data quite well. It is generally good practice to check that RD results are not sensitive to the choice of bandwidth.
+
+
+The concerns behind the choice of functional form and the choice of bandwidth are the same for both sharp and fuzzy RD's. The details of how the estimation proceeds from this point will depend on whether you are in sharp or fuzzy land and will be discussed in the relevant section. 
 
 \subsection{Sharp RD Designs}
 
