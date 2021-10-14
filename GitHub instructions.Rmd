@@ -1,7 +1,7 @@
 ---
 title: 'Step-by-step Assignment Instructions for GitHub'
 author: "Claire Duquennois"
-date: "10/214/2020"
+date: "10/14/2021"
 output:
   pdf_document:
     number_sections: yes
