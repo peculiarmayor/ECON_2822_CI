@@ -1,13 +1,4 @@
 First name; GitHub user ID you will be using
 
 Claire; claireduq
-Erica; els204
-Adam; AdamDuvall
-Spencer; STSegal
-Natalee; nsm30
-Mason; MasonPutt
-Tricia; pmm1218
-Jiayi; jiz219
-Alyssa; amchoes
-Max; maxthompson134
-Kayko; halfriver
+Neil; nsilveus
