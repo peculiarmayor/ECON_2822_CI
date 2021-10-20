@@ -372,6 +372,30 @@ $$
 
 with the right research design, we can recover $\bar{\tau}$.
 
+## Conditional Expectations 
+
+
+\center ![]("images\ciacomic.png"){width=50%}
+
+$$
+\begin{aligned}
+E[death_i]=?\\
+E[death_i|knows\text{ }E[death]_i]=?\\
+\end{aligned}
+$$
+
+## Conditional Expectations 
+
+
+\center ![]("images\ciacomic.png"){width=50%}
+
+$$
+\begin{aligned}
+E[death]=\frac{1}{7,000,000}\\
+E[death|knows\text{ }E[death]]=\frac{1}{6}\\
+\end{aligned}
+$$
+
 ## The Conditional Independence Assumption
 
 
@@ -487,9 +511,6 @@ $$
 E[Y_i(1)|X_i]-E[Y_i(0)|X_i]=E[Y_i(1)-Y_i(0)|X_i].
 $$
 
-## The Conditional Independence Assumption
-
-\center ![]("images\ciacomic.png"){width=50%}
 
 ## CIA in Regressions
 
