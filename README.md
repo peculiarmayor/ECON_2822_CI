@@ -1,1 +1,1 @@
-# ECON 2812_Economic Inference from Data
+# ECON 2822_Economic Inference from Data
