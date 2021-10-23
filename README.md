@@ -1,1 +1,1 @@
-# ECON 2822_Economic Inference from Data
+# ECON_2822_Causal_Inference
