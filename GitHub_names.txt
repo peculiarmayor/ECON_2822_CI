@@ -3,6 +3,7 @@ First name; GitHub user ID you will be using
 Claire; claireduq
 Neil; nsilveus
 Jane; janed
+Dorcas; dnmunoko
 Michael;mgobreski
 Olumayowa, peculiarmayor
 Mary Kate; vieleartenspatzen
@@ -14,3 +15,6 @@ Kiersten; kakochanowski
 Liam; lpflood
 John; JohnU213
 Jiani; JianiLiu1218
+Shivangee; ShivMakh
+Kofi;mkofiappiah0
+
