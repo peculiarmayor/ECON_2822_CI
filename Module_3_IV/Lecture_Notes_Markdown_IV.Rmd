@@ -412,10 +412,12 @@ $$
 Y=\beta_0+\beta_1 x_{1}+\beta_3x_3+\nu
 $$
 First stage:
-$$
-x_1=\gamma_0+\gamma_1z_1+\gamma_2z_2+u\\
-x_3=\lambda_0+\lambda_1z_1+\lambda_2z_2+u
-$$
+
+$$\begin{aligned}
+x_1&=\gamma_0+\gamma_1z_1+\gamma_2z_2+u\\
+x_3&=\lambda_0+\lambda_1z_1+\lambda_2z_2+u
+\end{aligned}$$
+
 Estimation: 
 
 ```{r simivme1}
@@ -488,7 +490,7 @@ Y_i(1)&=Y_i(0)+\tau.
 \end{aligned}
 $$
 
-Let $Y_i$ be knee pain and $D_i$ represent a theraputic stretching excercise that is designed to decrease knee pain, such that $D_i=1$ if individual $i$ does the stretching excercises and $D_i=0$ if individual $i$ does not. Our goal is to estimate the effect that the stretching excercises have on lowering knee pain-our hope is that $\tau$ is large and negative. 
+Let $Y_i$ be knee pain and $D_i$ represent a therapeutic stretching excercise that is designed to decrease knee pain, such that $D_i=1$ if individual $i$ does the stretching excercises and $D_i=0$ if individual $i$ does not. Our goal is to estimate the effect that the stretching excercises have on lowering knee pain-our hope is that $\tau$ is large and negative. 
 
 One way to estimate the effect is to start selling promoting the excercises to the general population and then collect some data and run a regression of knee pain on whether or not you do the stretching excercises. However, this estimate will clearly suffer from a selection issue- people who do the stretching excercises are the ones who have knee pain to begin with! We will likely get a positive estimate of $\tau$ from this procedure, even if the true $\tau$ is large and negative. This may be true even if we condition on observable covariates. Therefore in order to accurately estimate $\tau$, we design a medical trial in which we randomly assign some patients to the treatment group and others to the control group. The patients in the treatment group are instructed on the stretching excercises and told to do them regularly, while the patients in the control group are not.   
 
