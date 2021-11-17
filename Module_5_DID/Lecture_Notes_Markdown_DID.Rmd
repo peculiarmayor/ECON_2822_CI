@@ -13,6 +13,7 @@ library(lfe)
 library(dplyr)
 library(ggplot2)
 library(stargazer)
+library(formatR)
 # Set so that long lines in R will be wrapped:
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
 ```
@@ -209,7 +210,7 @@ The key assumption for the validity of this method is the \textit{the difference
 
 The idea behind this assumption is easily illustrated graphically. 
 
- ![...]("C:\Users\Claire\Dropbox\MQE_CI_Fall2020\Lecture Notes\DIDregression.png")
+ ![...]("images\DIDregression.png")
 
 In green we see how the outcome variable changes in the control group between $t=0$ and $t=1$, a change that is estimated by $\beta_1$. 
 
@@ -334,7 +335,9 @@ didplot2<-ggplot(res, aes(x=year, y=Estimate)) +
 didplot2
 ```
  \subsubsection{A note on Inference}
- 
+  
+  ![]("images\cluster_comic.png"){width=90%}
+
  In many DID setups, the variable of interest only varies at a "group" level (ex: at the state or class level) meaning that the outcome variables are often serially correlated. This means that conventional standard errors will often severely understate the standard deviation of the estimators and so standard errors are biased downward (i.e. incorrectly small) which can lead to inference errors. The most commonly applied solution to this is to cluster standard errors at the group level (more on clustering at the end of the semester). Clustering standard errors can be done in R using the felm function as illustrated below. 
  
 ```{r didinf, results="asis"} 
@@ -467,7 +470,7 @@ This result can act as a good robustness test. We have just shown that the jump 
 
 \subsection{Generalized DID: Staggered events}
 
- ![...]("C:\Users\Claire\Dropbox\MQE_CI_Fall2020\Lecture Notes\PanelRollout.png")
+ ![...]("images\PanelRollout.png")
 
 Sometimes there are natural experiments in which there is a "pure control" that never gets treated and can serve as a counterfactual to treatment. Other times we do not have a true control, but can use our DID model for another type of comparison if a treatment or reform is rolled out over a number of months/years across various treatment units. In these cases we can use the staggered nature of the roll out to identify the causal effect of the program. 
 

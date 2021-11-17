@@ -590,11 +590,14 @@ What if the variable of interest only varies at a "group" level
 
 - There is less variation then we actually think
 
+ ![]("images\cluster_comic.png"){width=90%}
+
+## A note on Inference: Clustering
+
 Conventional standard errors will often severely understate the standard deviation of the estimators and lead to inference errors. 
 
 Solution: cluster standard errors at the group level.
 
-## A note on Inference: Clustering
 
 Clustering standard errors can be done in R using the felm function: 
  \tiny
@@ -889,7 +892,7 @@ Researchers have used the staggered nature of the roll out to identify the causa
 
 ## Generalized DID: Staggered events
 
- ![Staggered roll out]("C:\Users\Claire\Dropbox\MQE_CI_Fall2020\Lecture Notes\PanelRollout.png"){width=70%}
+ ![Staggered roll out]("images\PanelRollout.png"){width=70%}
 
 Unit 1 is treated at time 3, unit 2 at time 5, unit 3 at time 7, etc.
 

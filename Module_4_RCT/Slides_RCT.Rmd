@@ -1,7 +1,6 @@
 ---
 title: "MQE: Economic Inference from Data:  \nModule 4: Randomized Control Trials"
 author: "Claire Duquennois"
-date: "6/9/2020"
 output:
   beamer_presentation: default
   pdf_document: default
@@ -190,7 +189,7 @@ I generate a set of simulated data:
 \tiny
 ```{r simrct1, results = "asis", echo=TRUE}
 
-set.seed(5000)
+set.seed(1999)
 
 scores5<-as.data.frame(rep(c(1,2,3,4,5,6,7,8,9,10),times=30))
 names(scores5)<-c("class")
@@ -228,9 +227,9 @@ Because treatment was randomized, even though the class the student is in does a
 
 ## RCT Key assumption
 
-The key assumption is that 
+The key assumption is that \textbf{there is no selection into treatment} so
 $$
-E[\eta_i|D_i=1]= E[\eta_i|D_i=0]=0.
+E[\eta_i|D_i=1]= E[\eta_i|D_i=0].
 $$
  
  
