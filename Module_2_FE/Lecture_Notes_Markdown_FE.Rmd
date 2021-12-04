@@ -110,11 +110,11 @@ Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2Married_{it}+\gamma_i+\epsilon.
 \end{split}
 \end{equation}
 
-Notice that given the data I can add an additional control that may be important. Suppose I am concerned that incomes in my data were severely affected by the financial crisis in 2008. Just as above, I can control for any common effect a particular year had on all the individuals by adding year fixed effects ($\tau_t$) as specified below,
+Notice that given the data I can add an additional control that may be important. Suppose I am concerned that incomes in my data were severely affected by the financial crisis in 2008. Just as above, I can control for any common effect a particular year had on all the individuals by adding year fixed effects ($\lambda_t$) as specified below,
 
 \begin{equation}
 \begin{split}
-Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2Married_{it}+\gamma_i+\tau_t+\epsilon.
+Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2Married_{it}+\gamma_i+\lambda_t+\epsilon.
 \end{split}
 \end{equation}
 
@@ -322,10 +322,10 @@ summary(regcrime3)
 
 Now we get a coefficient on unemployment that makes a lot more sense. Notice that we were not able to estimate a coefficient for $area_i$ and $west_i$. This is because of the multicollinearity problem. These city characteristics are time-invariant. If we include city fixed effects, these factors will already be controlled for. When we control for the city fixed effect, there is no longer any remaining variation with which to estimate the impact of $area_i$ or $west_i$. 
 
-Suppose I am concerned about how national factors could be affecting all cities simultaneously. I can add a year fixed effect, ($\tau_t$) to control for these
+Suppose I am concerned about how national factors could be affecting all cities simultaneously. I can add a year fixed effect, ($\lambda_t$) to control for these
 
 $$
-crmrte_{it}=\beta_0+\beta_1unemp_{it}+\beta_2area_i+\beta_3west_i+\beta_4offarea_{it}+\beta_5lawexp_{it}+\beta_6pcinc_{it}+\alpha_i+\tau_t+\epsilon
+crmrte_{it}=\beta_0+\beta_1unemp_{it}+\beta_2area_i+\beta_3west_i+\beta_4offarea_{it}+\beta_5lawexp_{it}+\beta_6pcinc_{it}+\alpha_i+\lambda_t+\epsilon
 $$
 
 ```{r crime4}

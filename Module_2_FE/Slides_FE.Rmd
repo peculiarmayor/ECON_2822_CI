@@ -166,10 +166,10 @@ $$
 
 
 $$
-Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2 Married_{it}+\gamma_i+\tau_t+\epsilon.
+Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2 Married_{it}+\gamma_i+\lambda_t+\epsilon.
 $$
 
-- What is $\tau_t$?
+- What is $\lambda_t$?
 
 - What is this estimation equivalent to?
 
@@ -178,7 +178,7 @@ $$
 If I estimate 
 
 $$
-Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2 Married_{it}+\gamma_i+\tau_t+\epsilon.
+Income_{it}=\beta_0+\beta_1Schooling_{it}+\beta_2 Married_{it}+\gamma_i+\lambda_t+\epsilon.
 $$
 Where (who?) is my identifying variation coming from for estimating $\beta_1$?
 
@@ -615,13 +615,13 @@ $\Rightarrow$ Top Hat
 
 Suppose I am concerned about how national factors could be affecting all cities simultaneously. 
 
-Add a year fixed effect, ($\tau_t$).
+Add a year fixed effect, ($\lambda_t$).
 
 $$
 \begin{aligned}
 crmrte_{it}=&\beta_0+\beta_1unemp_{it}\\
 &+\beta_2area_i+\beta_3west_i+\beta_4offarea_{it}+\beta_5lawexp_{it}+\beta_6pcinc_{it}\\
-&+\alpha_i+\tau_t+\epsilon
+&+\alpha_i+\lambda_t+\epsilon
 \end{aligned}
 $$
 
